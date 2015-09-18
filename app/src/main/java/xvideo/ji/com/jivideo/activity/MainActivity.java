@@ -2,7 +2,6 @@ package xvideo.ji.com.jivideo.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,15 +12,17 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import xvideo.ji.com.jivideo.R;
+import xvideo.ji.com.jivideo.fragment.ListFragment;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
-import xvideo.ji.com.jivideo.fragment.TestFragment;
+import xvideo.ji.com.jivideo.fragment.VideoFragment;
 
 public class MainActivity extends ActionBarActivity {
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-    private TestFragment mTestFragment;
+    private VideoFragment mVideoFragment;
     private MainFragment mMainFragment;
+    private ListFragment mListFragment;
     private ListView mLeftMenuLv;
     private String[] strs = {"1", "2", "3", "4"};
     private ArrayAdapter mArrayAdapter;
@@ -75,22 +76,22 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void init() {
-        mTestFragment = new TestFragment();
+        mVideoFragment = new VideoFragment();
         mMainFragment = new MainFragment();
+        mListFragment = new ListFragment();
 
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, mTestFragment).
-                add(R.id.fragment_container, mMainFragment).hide(mTestFragment).commit();
-
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, mVideoFragment)
+                .add(R.id.fragment_container, mListFragment)
+                .add(R.id.fragment_container, mMainFragment)
+                .hide(mMainFragment)
+                .hide(mListFragment)
+                .commit();
     }
-
 
     private void findviewById() {
         mToolbar = (Toolbar) findViewById(R.id.custom_toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.custom_drawerlayout);
         mLeftMenuLv = (ListView) findViewById(R.id.leftmenu_lv);
     }
-
-
 }

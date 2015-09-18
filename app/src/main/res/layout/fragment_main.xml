@@ -27,14 +27,14 @@
 
             <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
                 android:id="@+id/top_item1_fl"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
 
             <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
                 android:id="@+id/top_item2_fl"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
 
         </LinearLayout>
