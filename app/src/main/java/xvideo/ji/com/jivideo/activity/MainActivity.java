@@ -1,12 +1,14 @@
 package xvideo.ji.com.jivideo.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -87,6 +89,15 @@ public class MainActivity extends ActionBarActivity {
                 .hide(mMainFragment)
                 .hide(mListFragment)
                 .commit();
+
+        mLeftMenuLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 3) {
+                    startActivity(new Intent(mContext, AboutActivity.class));
+                }
+            }
+        });
     }
 
     private void findviewById() {
