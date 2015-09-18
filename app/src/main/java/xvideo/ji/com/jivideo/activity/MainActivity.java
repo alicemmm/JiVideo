@@ -1,4 +1,4 @@
-package xvideo.ji.com.jivideo;
+package xvideo.ji.com.jivideo.activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
 import xvideo.ji.com.jivideo.fragment.TestFragment;
 

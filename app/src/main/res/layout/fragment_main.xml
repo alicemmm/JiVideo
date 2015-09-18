@@ -25,19 +25,17 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="match_parent"
+            <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
+                android:id="@+id/top_item1_fl"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
 
-            <ImageView
-                android:layout_width="match_parent"
+            <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
+                android:id="@+id/top_item2_fl"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
 
         </LinearLayout>
     </LinearLayout>
@@ -48,7 +46,23 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
+        <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
+            android:id="@+id/bottom_item1_fl"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
 
+        <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
+            android:id="@+id/bottom_item2_fl"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
+
+        <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
+            android:id="@+id/bottom_item3_fl"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
     </LinearLayout>
 
 </LinearLayout>
