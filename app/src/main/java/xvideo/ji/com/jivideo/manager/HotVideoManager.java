@@ -1,6 +1,7 @@
 package xvideo.ji.com.jivideo.manager;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -8,10 +9,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 
 import xvideo.ji.com.jivideo.config.Consts;
+import xvideo.ji.com.jivideo.data.HotVideoData;
 import xvideo.ji.com.jivideo.network.VolleyRequestManager;
 import xvideo.ji.com.jivideo.utils.JiLog;
 
@@ -24,7 +31,7 @@ public class HotVideoManager {
     public interface onResponseListener {
         void onFailure(String errMsg);
 
-        void onSuccess();
+        void onSuccess(HotVideoData hotVideoData);
     }
 
     private StringRequest mRequest;
@@ -74,8 +81,51 @@ public class HotVideoManager {
     private void analyseRsp(String param) {
         try {
             String rsp = URLDecoder.decode(param, "utf-8");
-            JiLog.error(TAG, rsp);
+
+            if (TextUtils.isEmpty(rsp)) {
+                doFailure("param is empty");
+                return;
+            }
+
+            HotVideoData hotVideoData = new HotVideoData();
+            ArrayList<HotVideoData.HotsEntity> hotsDataList = null;
+
+            JSONObject jsonObject = new JSONObject(rsp);
+            JSONArray jsonArray = jsonObject.getJSONArray("hots");
+            int length = jsonArray.length();
+
+            if (length > 0) {
+                hotsDataList = new ArrayList<>();
+                for (int i = 0; i < length; i++) {
+                    JSONObject object = jsonArray.getJSONObject(i);
+
+                    HotVideoData.HotsEntity hotsData = new HotVideoData.HotsEntity();
+
+                    hotsData.setArea(object.optString("area"));
+                    hotsData.setBt_url(object.optString("bt_url"));
+                    hotsData.setCountry(object.optString("country"));
+                    hotsData.setDescription(object.optString("description"));
+                    hotsData.setHigh_point(object.optInt("high_point"));
+                    hotsData.setId(object.optInt("id"));
+                    hotsData.setLow_point(object.optInt("low_point"));
+                    hotsData.setMain_icon(object.optString("main_icon"));
+                    hotsData.setScore(object.optInt("score"));
+                    hotsData.setSmall_icon(object.optString("small_icon"));
+                    hotsData.setTitle(object.optString("title"));
+                    hotsData.setUrl(object.optString("url"));
+                    hotsData.setVideo(object.optString("video"));
+                    hotsData.setVideo2(object.optString("video2"));
+                    hotsData.setWatch(object.optInt("watch"));
+                    hotsDataList.add(hotsData);
+                }
+                hotVideoData.setHots(hotsDataList);
+            }
+
+            doSuccess(hotVideoData);
+
         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -86,9 +136,9 @@ public class HotVideoManager {
         }
     }
 
-    private void doSuccess() {
+    private void doSuccess(HotVideoData hotVideoData) {
         if (mListener != null) {
-            mListener.onSuccess();
+            mListener.onSuccess(hotVideoData);
         }
     }
 
