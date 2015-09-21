@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import xvideo.ji.com.jivideo.MyApplication;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.fragment.ListFragment;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
@@ -36,7 +35,6 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         mContext = this;
-        MyApplication.getInstance().addActivity(this);
 
         findviewById();
 
@@ -109,6 +107,5 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyApplication.getInstance().removeActivity(this);
     }
 }

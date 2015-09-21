@@ -20,7 +20,6 @@ public class AboutActivity extends BaseActivity {
 
         mContext = this;
 
-
         HotVideoManager manager = new HotVideoManager(this, new HotVideoManager.onResponseListener() {
             @Override
             public void onFailure(String errMsg) {
