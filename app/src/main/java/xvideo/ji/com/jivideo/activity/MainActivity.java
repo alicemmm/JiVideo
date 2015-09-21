@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import xvideo.ji.com.jivideo.MyApplication;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.fragment.ListFragment;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
@@ -36,6 +36,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         mContext = this;
+        MyApplication.getInstance().addActivity(this);
 
         findviewById();
 
@@ -63,13 +64,11 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                Toast.makeText(mContext, "open", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                Toast.makeText(mContext, "close", Toast.LENGTH_LONG).show();
             }
         };
 
@@ -90,6 +89,7 @@ public class MainActivity extends ActionBarActivity {
                 .hide(mListFragment)
                 .commit();
 
+        //TODO need to add menu
         mLeftMenuLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -104,5 +104,11 @@ public class MainActivity extends ActionBarActivity {
         mToolbar = (Toolbar) findViewById(R.id.custom_toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.custom_drawerlayout);
         mLeftMenuLv = (ListView) findViewById(R.id.leftmenu_lv);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MyApplication.getInstance().removeActivity(this);
     }
 }
