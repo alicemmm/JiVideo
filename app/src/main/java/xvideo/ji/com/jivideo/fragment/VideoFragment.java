@@ -8,13 +8,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.bumptech.glide.Glide;
 
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.data.HotVideoData;
@@ -30,9 +29,10 @@ public class VideoFragment extends Fragment {
     private static final int HANDLE_SUCCESS = 1;
 
     private GridView mGridView;
-    private ArrayList<HashMap<String, Object>> mArrayList;
     private Context mContext;
     private HotVideoData mHotVideData;
+
+    private MyAdapter mMyAdapter;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -62,6 +62,8 @@ public class VideoFragment extends Fragment {
         }
 
         mHotVideData = (HotVideoData) obj;
+        mMyAdapter = new MyAdapter(mContext, mHotVideData);
+        mGridView.setAdapter(mMyAdapter);
 
     }
 
@@ -91,28 +93,61 @@ public class VideoFragment extends Fragment {
 
         mGridView = (GridView) view.findViewById(R.id.video_gridview);
 
-        mArrayList = new ArrayList<HashMap<String, Object>>();
+        return view;
+    }
 
-        for (int i = 0; i < 20; i++) {
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("ItemImage", R.mipmap.ic_launcher);
-            map.put("ItemText", "Info" + i);
-            mArrayList.add(map);
+    private class MyAdapter extends BaseAdapter {
+        HotVideoData hotVideoData;
+        Context context;
+        LayoutInflater inflater;
+
+        public MyAdapter(Context context, HotVideoData hotVideoData) {
+            this.context = context;
+            this.hotVideoData = hotVideoData;
+            inflater = LayoutInflater.from(mContext);
         }
 
-        SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(), mArrayList, R.layout.item_video,
-                new String[]{"ItemImage", "ItemText"},
-                new int[]{R.id.griditem_pic_iv, R.id.griditem_info_tv});
+        @Override
+        public int getCount() {
+            return hotVideoData.getHots().size();
+        }
 
-        mGridView.setAdapter(simpleAdapter);
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
 
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), "onClick" + i, Toast.LENGTH_LONG).show();
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        class ViewHolder {
+            ImageView itemPic;
+            TextView itemInfo;
+        }
+
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            ViewHolder holder = new ViewHolder();
+
+            if (view == null) {
+                view = inflater.inflate(R.layout.view_customitem, null);
+                holder.itemPic = (ImageView) view.findViewById(R.id.item_pic_iv);
+                holder.itemInfo = (TextView) view.findViewById(R.id.item_info_tv);
+                view.setTag(holder);
+            } else {
+                holder = (ViewHolder) view.getTag();
             }
-        });
 
-        return view;
+            holder.itemInfo.setText(hotVideoData.getHots().get(i).getTitle());
+            Glide.with(mContext)
+                    .load(hotVideoData.getHots().get(i).getSmall_icon())
+                    .into(holder.itemPic);
+
+            return view;
+        }
+
     }
 }
