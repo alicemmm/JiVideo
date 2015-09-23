@@ -12,19 +12,27 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.fragment.ListFragment;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
 import xvideo.ji.com.jivideo.fragment.VideoFragment;
 
 public class MainActivity extends ActionBarActivity {
-    private Toolbar mToolbar;
-    private DrawerLayout mDrawerLayout;
+    @Bind(R.id.custom_toolbar)
+    Toolbar mToolbar;
+
+    @Bind(R.id.custom_drawerlayout)
+    DrawerLayout mDrawerLayout;
+
+    @Bind(R.id.leftmenu_lv)
+    ListView mLeftMenuLv;
+
     private ActionBarDrawerToggle mDrawerToggle;
     private VideoFragment mVideoFragment;
     private MainFragment mMainFragment;
     private ListFragment mListFragment;
-    private ListView mLeftMenuLv;
     private String[] strs = {"1", "2", "3", "4"};
     private ArrayAdapter mArrayAdapter;
     private Context mContext;
@@ -35,8 +43,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         mContext = this;
-
-        findviewById();
+        ButterKnife.bind(this);
 
         initToolbar();
 
@@ -96,12 +103,6 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         });
-    }
-
-    private void findviewById() {
-        mToolbar = (Toolbar) findViewById(R.id.custom_toolbar);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.custom_drawerlayout);
-        mLeftMenuLv = (ListView) findViewById(R.id.leftmenu_lv);
     }
 
     @Override
