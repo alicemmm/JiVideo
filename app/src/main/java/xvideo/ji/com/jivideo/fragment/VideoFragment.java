@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -40,7 +41,7 @@ public class VideoFragment extends Fragment {
             super.handleMessage(msg);
             switch (msg.what) {
                 case HANDLE_FAILURE:
-                    doHandlerFailure();
+                    doHandlerFailure(msg.obj);
                     break;
                 case HANDLE_SUCCESS:
                     doHandlerSuccess(msg.obj);
@@ -52,8 +53,11 @@ public class VideoFragment extends Fragment {
     };
 
 
-    private void doHandlerFailure() {
-
+    private void doHandlerFailure(Object obj) {
+        if (obj == null) {
+            return;
+        }
+        Toast.makeText(mContext, obj.toString(), Toast.LENGTH_LONG).show();
     }
 
     private void doHandlerSuccess(Object obj) {
@@ -77,6 +81,7 @@ public class VideoFragment extends Fragment {
             public void onFailure(String errMsg) {
                 Message message = new Message();
                 message.what = HANDLE_FAILURE;
+                message.obj = errMsg;
                 mHandler.sendMessage(message);
             }
 

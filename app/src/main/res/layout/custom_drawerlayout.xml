@@ -15,36 +15,111 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/bottombar_ll"></RelativeLayout>
 
+        <!-- bottom bar -->
         <LinearLayout
             android:id="@+id/bottombar_ll"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
-            android:orientation="horizontal">
+            android:background="#f2f2f2"
+            android:orientation="horizontal"
+            >
 
-            <Button
+            <LinearLayout
+                android:id="@+id/main_bottom1_ll"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Btn1" />
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="4dp"
+                android:paddingTop="8dp">
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Btn2" />
+                <ImageView
+                    android:id="@+id/main_bottom1_iv"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/ic_launcher" />
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Btn3" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Home"
+                    android:textColor="@drawable/bottom_btn_selector"
+                    android:textSize="10sp" />
+            </LinearLayout>
 
-            <Button
+            <LinearLayout
+                android:id="@+id/main_bottom2_ll"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Btn4" />
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="4dp"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:id="@+id/main_bottom2_iv"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Video"
+                    android:textColor="@drawable/bottom_btn_selector"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/main_bottom3_ll"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="4dp"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:id="@+id/main_bottom3_iv"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="List"
+                    android:textColor="@drawable/bottom_btn_selector"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/main_bottom4_ll"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="4dp"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:id="@+id/main_bottom4_iv"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="More"
+                    android:textColor="@drawable/bottom_btn_selector"
+                    android:textSize="10sp" />
+            </LinearLayout>
         </LinearLayout>
 
 
