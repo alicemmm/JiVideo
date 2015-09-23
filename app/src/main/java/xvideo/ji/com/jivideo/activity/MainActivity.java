@@ -136,8 +136,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mMainBottomLls[1].setOnClickListener(this);
         mMainBottomLls[2].setOnClickListener(this);
         mMainBottomLls[3].setOnClickListener(this);
-
-
     }
 
     @Override
