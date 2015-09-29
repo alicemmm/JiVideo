@@ -87,6 +87,8 @@ public class HotVideoManager {
                 return;
             }
 
+            JiLog.error(TAG, "rsp=" + rsp);
+
             HotVideoData hotVideoData = new HotVideoData();
             ArrayList<HotVideoData.HotsEntity> hotsDataList = null;
 

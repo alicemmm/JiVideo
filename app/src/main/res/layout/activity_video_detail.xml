@@ -4,10 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--Toolbar-->
+    <include layout="@layout/custom_toolbar" />
+
     <ImageView
+        android:id="@+id/detail_video_big_pic_iv"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:background="@mipmap/ic_launcher" />
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:background="@mipmap/detail_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,10 +22,12 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:id="@+id/detail_video_icon_iv"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_launcher" />
+            android:scaleType="fitXY"
+            android:background="@mipmap/detail_icon2" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -30,6 +37,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/detail_video_title_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="funny videos NO.9"
@@ -37,16 +45,21 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/detail_video_content_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="india\nindia\n4833watching" />
 
             <ImageView
+                android:id="@+id/detail_video_download_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:src="@mipmap/download" />
 
             <TextView
+                android:id="@+id/detail_video_need_point_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="20Points"
@@ -56,8 +69,10 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/detail_video_more_detail_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="10dp"
             android:text="More Points>"
             android:textColor="@android:color/holo_red_dark" />
@@ -71,6 +86,7 @@
         android:background="#ff000000" />
 
     <TextView
+        android:id="@+id/detail_video_small_point_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

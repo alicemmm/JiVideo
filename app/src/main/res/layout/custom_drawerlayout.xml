@@ -13,7 +13,7 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/bottombar_ll"></RelativeLayout>
+            android:layout_above="@+id/bottombar_ll"/>
 
         <!-- bottom bar -->
         <LinearLayout
@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
-            android:background="#f2f2f2"
+            android:background="@color/toolbar_bg"
             android:orientation="horizontal"
             >
 
@@ -39,7 +39,7 @@
                     android:id="@+id/main_bottom1_iv"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/bottom_home_selector" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
                     android:id="@+id/main_bottom2_iv"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/bottom_hot_selector" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
                     android:id="@+id/main_bottom3_iv"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/bottom_wall_selector" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -111,7 +111,7 @@
                     android:id="@+id/main_bottom4_iv"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/bottom_speed_selector" />
 
                 <TextView
                     android:layout_width="wrap_content"

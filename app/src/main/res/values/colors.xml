@@ -4,6 +4,10 @@
     <color name="Indigo_colorPrimary">#3f51b5</color>
     <color name="Indigo_nav_color">#4675FF</color>
 
-    <color name="bottom_btn_pressed">#fe2557</color>
+    <color name="bottom_btn_pressed">#36afff</color>
     <color name="bottom_btn_normal">#999999</color>
+
+    <color name="toolbar_title_text">#ffffff</color>
+
+    <color name="toolbar_bg">#272727</color>
 </resources>
