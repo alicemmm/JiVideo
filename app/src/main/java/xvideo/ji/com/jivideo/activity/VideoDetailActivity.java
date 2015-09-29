@@ -19,6 +19,7 @@ public class VideoDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_video_detail);
         mContext = this;
         init();
+        
     }
 
     private void init() {

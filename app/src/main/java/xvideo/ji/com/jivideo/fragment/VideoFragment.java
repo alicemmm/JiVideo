@@ -104,6 +104,7 @@ public class VideoFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(mContext, VideoDetailActivity.class);
+                intent.putExtra("icon", mHotVideData.getHots().get(i).getSmall_icon());
                 startActivity(intent);
             }
         });
