@@ -14,8 +14,9 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
+            android:scaleType="fitXY"
             android:layout_margin="4dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/detail_icon2" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -49,8 +50,9 @@
             android:id="@+id/soft_item_download_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_margin="4dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/download" />
 
     </LinearLayout>
 
