@@ -1,5 +1,8 @@
 package xvideo.ji.com.jivideo.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
@@ -41,7 +44,7 @@ public class HotVideoData {
         return hots;
     }
 
-    public static class HotsEntity {
+    public static class HotsEntity implements Parcelable {
         /**
          * area : USA
          * bt_url :
@@ -75,6 +78,64 @@ public class HotVideoData {
         private String video;
         private String video2;
         private int watch;
+
+        public HotsEntity() {
+
+        }
+
+        public HotsEntity(Parcel source) {
+            area = source.readString();
+            bt_url = source.readString();
+            country = source.readString();
+            description = source.readString();
+            high_point = source.readInt();
+            id = source.readInt();
+            low_point = source.readInt();
+            main_icon = source.readString();
+            score = source.readInt();
+            small_icon = source.readString();
+            title = source.readString();
+            url = source.readString();
+            video = source.readString();
+            video2 = source.readString();
+            watch = source.readInt();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flag) {
+            dest.writeString(area);
+            dest.writeString(bt_url);
+            dest.writeString(country);
+            dest.writeString(description);
+            dest.writeInt(high_point);
+            dest.writeInt(id);
+            dest.writeInt(low_point);
+            dest.writeString(main_icon);
+            dest.writeInt(score);
+            dest.writeString(small_icon);
+            dest.writeString(title);
+            dest.writeString(url);
+            dest.writeString(video);
+            dest.writeString(video2);
+            dest.writeInt(watch);
+        }
+
+        public static final Creator<HotsEntity> CREATOR = new Creator<HotsEntity>() {
+            @Override
+            public HotsEntity createFromParcel(Parcel parcel) {
+                return new HotsEntity(parcel);
+            }
+
+            @Override
+            public HotsEntity[] newArray(int i) {
+                return new HotsEntity[i];
+            }
+        };
 
         public void setArea(String area) {
             this.area = area;

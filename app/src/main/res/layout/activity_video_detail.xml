@@ -4,13 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--Toolbar-->
+    <include layout="@layout/custom_toolbar" />
+
     <ImageView
         android:id="@+id/detail_video_big_pic_iv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@mipmap/detail_icon"
-        android:scaleType="center"
-        android:src="@mipmap/play_icon" />
+        android:scaleType="fitXY"
+        android:background="@mipmap/detail_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +27,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/detail_icon2" />
+            android:background="@mipmap/detail_icon2" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -70,6 +72,7 @@
             android:id="@+id/detail_video_more_detail_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="10dp"
             android:text="More Points>"
             android:textColor="@android:color/holo_red_dark" />
@@ -83,6 +86,7 @@
         android:background="#ff000000" />
 
     <TextView
+        android:id="@+id/detail_video_small_point_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

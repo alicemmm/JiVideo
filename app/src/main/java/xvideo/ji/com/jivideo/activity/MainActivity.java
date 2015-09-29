@@ -89,6 +89,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void initToolbar() {
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title_text));
         mToolbar.setTitle("JiVideo");
 
         setSupportActionBar(mToolbar);
