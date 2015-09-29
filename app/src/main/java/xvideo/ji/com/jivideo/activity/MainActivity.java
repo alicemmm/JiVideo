@@ -17,8 +17,9 @@ import android.widget.ListView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import xvideo.ji.com.jivideo.R;
-import xvideo.ji.com.jivideo.fragment.ListFragment;
+import xvideo.ji.com.jivideo.fragment.MoreFragment;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
+import xvideo.ji.com.jivideo.fragment.SoftFragment;
 import xvideo.ji.com.jivideo.fragment.VideoFragment;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
@@ -49,7 +50,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ActionBarDrawerToggle mDrawerToggle;
     private VideoFragment mVideoFragment;
     private MainFragment mMainFragment;
-    private ListFragment mListFragment;
+    private SoftFragment mSoftFragment;
+    private MoreFragment mMoreFragment;
     private String[] strs = {"1", "2", "3", "4"};
     private ArrayAdapter mArrayAdapter;
     private Context mContext;
@@ -113,16 +115,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private void init() {
         mVideoFragment = new VideoFragment();
         mMainFragment = new MainFragment();
-        mListFragment = new ListFragment();
+        mSoftFragment = new SoftFragment();
+        mMoreFragment = new MoreFragment();
 
-        mFragments = new Fragment[]{mMainFragment, mVideoFragment, mListFragment,mListFragment};
+        mFragments = new Fragment[]{mMainFragment, mVideoFragment, mSoftFragment, mMoreFragment};
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, mVideoFragment)
-                .add(R.id.fragment_container, mListFragment)
+                .add(R.id.fragment_container, mMoreFragment)
                 .add(R.id.fragment_container, mMainFragment)
+                .add(R.id.fragment_container, mSoftFragment)
                 .hide(mVideoFragment)
-                .hide(mListFragment)
+                .hide(mSoftFragment)
+                .hide(mMoreFragment)
                 .commit();
 
         mMainBottomLls = new LinearLayout[4];

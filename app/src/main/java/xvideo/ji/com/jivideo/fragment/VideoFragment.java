@@ -1,6 +1,7 @@
 package xvideo.ji.com.jivideo.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import xvideo.ji.com.jivideo.R;
+import xvideo.ji.com.jivideo.activity.VideoDetailActivity;
 import xvideo.ji.com.jivideo.data.HotVideoData;
 import xvideo.ji.com.jivideo.manager.HotVideoManager;
 
@@ -97,6 +100,13 @@ public class VideoFragment extends Fragment {
         manager.req();
 
         mGridView = (GridView) view.findViewById(R.id.video_gridview);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(mContext, VideoDetailActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
