@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.fragment.ListFragment;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
+import xvideo.ji.com.jivideo.fragment.SoftFragment;
 import xvideo.ji.com.jivideo.fragment.VideoFragment;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
@@ -49,6 +50,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ActionBarDrawerToggle mDrawerToggle;
     private VideoFragment mVideoFragment;
     private MainFragment mMainFragment;
+    private SoftFragment mSoftFragment;
     private ListFragment mListFragment;
     private String[] strs = {"1", "2", "3", "4"};
     private ArrayAdapter mArrayAdapter;
@@ -113,15 +115,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private void init() {
         mVideoFragment = new VideoFragment();
         mMainFragment = new MainFragment();
+        mSoftFragment = new SoftFragment();
         mListFragment = new ListFragment();
 
-        mFragments = new Fragment[]{mMainFragment, mVideoFragment, mListFragment,mListFragment};
+        mFragments = new Fragment[]{mMainFragment, mVideoFragment, mSoftFragment, mListFragment};
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, mVideoFragment)
                 .add(R.id.fragment_container, mListFragment)
                 .add(R.id.fragment_container, mMainFragment)
+                .add(R.id.fragment_container, mSoftFragment)
                 .hide(mVideoFragment)
+                .hide(mSoftFragment)
                 .hide(mListFragment)
                 .commit();
 
