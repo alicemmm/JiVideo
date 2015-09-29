@@ -27,11 +27,12 @@ public class SoftFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_soft, container, false);
         mContext = getActivity();
         mListView = (ListView) view.findViewById(R.id.soft_fragment_lv);
+        init();
         return view;
     }
 
     private void init(){
-       
+       mListView.setAdapter(new SoftListAdapter());
     }
 
 
@@ -54,7 +55,7 @@ public class SoftFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return 0;
+            return 20;
         }
 
         @Override

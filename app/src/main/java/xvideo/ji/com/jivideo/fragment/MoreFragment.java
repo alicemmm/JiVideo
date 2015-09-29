@@ -11,7 +11,7 @@ import xvideo.ji.com.jivideo.R;
 /**
  * Created by Domon on 15-9-18.
  */
-public class ListFragment extends Fragment {
+public class MoreFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
