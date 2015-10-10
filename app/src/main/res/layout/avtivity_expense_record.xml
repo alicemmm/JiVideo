@@ -6,10 +6,9 @@
     <!--Toolbar-->
     <include layout="@layout/custom_toolbar" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="expense record"
-        />
+    <ListView
+        android:id="@+id/expense_record_lv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

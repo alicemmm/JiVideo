@@ -23,9 +23,6 @@ import xvideo.ji.com.jivideo.activity.VideoDetailActivity;
 import xvideo.ji.com.jivideo.data.HotVideoData;
 import xvideo.ji.com.jivideo.manager.HotVideoManager;
 
-/**
- * Created by Domon on 15-9-18.
- */
 public class VideoFragment extends Fragment {
     private final static String TAG = VideoFragment.class.getSimpleName();
 

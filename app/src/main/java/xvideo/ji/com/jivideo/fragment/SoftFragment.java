@@ -6,16 +6,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import xvideo.ji.com.jivideo.R;
+import com.bumptech.glide.Glide;
 
-/**
- * Created by Domon on 15-9-18.
- */
+import java.util.ArrayList;
+
+import xvideo.ji.com.jivideo.R;
+import xvideo.ji.com.jivideo.data.SoftData;
+
 public class SoftFragment extends Fragment {
     private static final String TAG = SoftFragment.class.getSimpleName();
 
@@ -31,17 +34,27 @@ public class SoftFragment extends Fragment {
         return view;
     }
 
-    private void init(){
-       mListView.setAdapter(new SoftListAdapter());
-    }
+    private void init() {
+//        mListView.setAdapter(new SoftListAdapter());
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+            }
+        });
+
+    }
 
 
     private class SoftListAdapter extends BaseAdapter {
 
         private LayoutInflater inflater;
+        private Context context;
+        private ArrayList<SoftData> datas;
 
-        public SoftListAdapter() {
+        public SoftListAdapter(Context context, ArrayList<SoftData> datas) {
+            this.context = context;
+            this.datas = datas;
             inflater = LayoutInflater.from(mContext);
         }
 
@@ -55,12 +68,12 @@ public class SoftFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return 20;
+            return datas.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return null;
+            return datas.get(i);
         }
 
         @Override
@@ -83,6 +96,11 @@ public class SoftFragment extends Fragment {
             } else {
                 viewHolder = (ViewHolder) view.getTag();
             }
+
+            viewHolder.titleTv.setText(datas.get(i).getTitle());
+            viewHolder.introduceTv.setText(datas.get(i).getIntroduce());
+            viewHolder.rewardTv.setText("Credits" + datas.get(i).getPoint() + "install and open");
+            Glide.with(context).load(datas.get(i).getIcon()).into(viewHolder.iconIv);
 
             return view;
         }

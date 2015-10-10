@@ -22,9 +22,6 @@ import xvideo.ji.com.jivideo.data.HotVideoData;
 import xvideo.ji.com.jivideo.network.VolleyRequestManager;
 import xvideo.ji.com.jivideo.utils.JiLog;
 
-/**
- * Created by Domon on 15-9-21.
- */
 public class HotVideoManager {
     private static final String TAG = HotVideoManager.class.getSimpleName();
 

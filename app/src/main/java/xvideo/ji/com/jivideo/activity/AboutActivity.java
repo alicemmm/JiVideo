@@ -5,9 +5,6 @@ import android.os.Bundle;
 
 import xvideo.ji.com.jivideo.R;
 
-/**
- * Created by Domon on 15-9-18.
- */
 public class AboutActivity extends BaseActivity {
     private static final String TAG = AboutActivity.class.getSimpleName();
     private Context mContext;

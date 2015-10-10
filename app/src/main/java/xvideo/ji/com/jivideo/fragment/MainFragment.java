@@ -11,9 +11,6 @@ import android.view.ViewGroup;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.view.CustomItemFrameLayout;
 
-/**
- * Created by Domon on 15-9-18.
- */
 public class MainFragment extends Fragment {
     private CustomItemFrameLayout mBottomItem1Item;
     private CustomItemFrameLayout mBottomItem2Item;
