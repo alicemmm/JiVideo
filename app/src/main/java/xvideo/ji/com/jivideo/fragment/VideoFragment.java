@@ -34,7 +34,7 @@ public class VideoFragment extends Fragment {
 
     private GridView mGridView;
     private Context mContext;
-    private HotVideoData mHotVideData;
+    private HotVideoData mHotVideoData;
 
     private MyAdapter mMyAdapter;
 
@@ -68,8 +68,8 @@ public class VideoFragment extends Fragment {
             return;
         }
 
-        mHotVideData = (HotVideoData) obj;
-        mMyAdapter = new MyAdapter(mContext, mHotVideData);
+        mHotVideoData = (HotVideoData) obj;
+        mMyAdapter = new MyAdapter(mContext, mHotVideoData);
         mGridView.setAdapter(mMyAdapter);
 
     }
@@ -104,7 +104,7 @@ public class VideoFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(mContext, VideoDetailActivity.class);
-                intent.putExtra("data", mHotVideData.getHots().get(i));
+                intent.putExtra("data", mHotVideoData.getHots().get(i));
                 startActivity(intent);
             }
         });

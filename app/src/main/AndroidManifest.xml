@@ -24,6 +24,8 @@
 
         <activity android:name=".activity.AboutActivity" />
         <activity android:name=".activity.VideoDetailActivity" />
+        <activity android:name=".activity.PointsRecordsActivity" />
+        <activity android:name=".activity.ExpenseRecordActivity" />
 
     </application>
 
