@@ -17,8 +17,8 @@ import android.widget.ListView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import xvideo.ji.com.jivideo.R;
-import xvideo.ji.com.jivideo.fragment.MoreFragment;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
+import xvideo.ji.com.jivideo.fragment.MoreFragment;
 import xvideo.ji.com.jivideo.fragment.SoftFragment;
 import xvideo.ji.com.jivideo.fragment.VideoFragment;
 
@@ -52,7 +52,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private MainFragment mMainFragment;
     private SoftFragment mSoftFragment;
     private MoreFragment mMoreFragment;
-    private String[] strs = {"1", "2", "3", "4"};
+    private String[] strs = {"Points Records", "Expense Records", "Updates Version", "About"};
     private ArrayAdapter mArrayAdapter;
     private Context mContext;
     private int btnIndex;
@@ -81,8 +81,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mLeftMenuLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 3) {
-                    startActivity(new Intent(mContext, AboutActivity.class));
+                switch (i) {
+                    case 0:
+                        startActivity(new Intent(mContext, PointsRecordsActivity.class));
+                        break;
+                    case 1:
+                        startActivity(new Intent(mContext, ExpenseRecordActivity.class));
+                        break;
+                    case 2:
+                        checkUpdate();
+                        break;
+                    case 3:
+                        startActivity(new Intent(mContext, AboutActivity.class));
+                        break;
+                    default:
+                        break;
                 }
             }
         });
@@ -142,6 +155,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mMainBottomLls[1].setOnClickListener(this);
         mMainBottomLls[2].setOnClickListener(this);
         mMainBottomLls[3].setOnClickListener(this);
+    }
+
+    private void checkUpdate(){
+
     }
 
     @Override

@@ -31,7 +31,7 @@ public class VideoDetailActivity extends BaseActivity {
     ImageView mBigPicIv;
 
     @Bind(R.id.detail_video_icon_iv)
-    ImageView mIconiv;
+    ImageView mIconIv;
 
     @Bind(R.id.detail_video_title_tv)
     TextView mTitleTv;
@@ -86,7 +86,7 @@ public class VideoDetailActivity extends BaseActivity {
 
     private void init() {
         Glide.with(mContext).load(mHotsEntity.getMain_icon()).into(mBigPicIv);
-        Glide.with(mContext).load(mHotsEntity.getSmall_icon()).into(mIconiv);
+        Glide.with(mContext).load(mHotsEntity.getSmall_icon()).into(mIconIv);
         mTitleTv.setText(mHotsEntity.getTitle());
         mContentTv.setText(mHotsEntity.getDescription());
         mBigPointTv.setText(mHotsEntity.getHigh_point() + "Points");
