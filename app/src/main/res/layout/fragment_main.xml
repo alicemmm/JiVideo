@@ -11,6 +11,7 @@
         android:orientation="horizontal">
 
         <xvideo.ji.com.jivideo.view.PicSlideView
+            android:id="@+id/slide_main_psv"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
@@ -27,13 +28,13 @@
                 android:id="@+id/top_item1_fl"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
+                android:layout_weight="1"/>
 
             <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
                 android:id="@+id/top_item2_fl"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
+                android:layout_weight="1"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -48,19 +49,19 @@
             android:id="@+id/bottom_item1_fl"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
+            android:layout_weight="1"/>
 
         <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
             android:id="@+id/bottom_item2_fl"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
+            android:layout_weight="1"/>
 
         <xvideo.ji.com.jivideo.view.CustomItemFrameLayout
             android:id="@+id/bottom_item3_fl"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"></xvideo.ji.com.jivideo.view.CustomItemFrameLayout>
+            android:layout_weight="1"/>
     </LinearLayout>
 
 </LinearLayout>

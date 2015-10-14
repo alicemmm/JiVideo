@@ -1,7 +1,7 @@
 package xvideo.ji.com.jivideo.view;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
@@ -25,6 +25,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import xvideo.ji.com.jivideo.R;
+import xvideo.ji.com.jivideo.activity.VideoDetailActivity;
+import xvideo.ji.com.jivideo.data.HotVideoData;
 
 public class PicSlideView extends FrameLayout {
     private static final String TAG = PicSlideView.class.getSimpleName();
@@ -36,8 +38,8 @@ public class PicSlideView extends FrameLayout {
 
     private Context mContext;
 
-    private ArrayList<String> mWebImagesIds;
-    private List<ImageView> mImageViewsList;
+    private List<HotVideoData.HotsEntity> mWebDatas;
+    private List<View> mImageViewsList;
     private List<View> mDotViewsList;
 
     private LinearLayout mDotGroup;
@@ -47,7 +49,7 @@ public class PicSlideView extends FrameLayout {
 
     private ScheduledExecutorService mScheduledExecutorService;
 
-    private Handler mHanlder = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -68,35 +70,43 @@ public class PicSlideView extends FrameLayout {
     public PicSlideView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
+    }
+
+    public void setDataAndInit(List<HotVideoData.HotsEntity> webDatas) {
+        this.mWebDatas = webDatas;
 
         initData();
-        initUI(context);
+        initUI(mContext);
         if (isAutoPlay) {
             startPlay();
         }
     }
 
     private void initData() {
-        mWebImagesIds = new ArrayList<>();
-        mWebImagesIds.add("http://img.lakalaec.com/ad/57ab6dc2-43f2-4087-81e2-b5ab5681642d.jpg");
-        mWebImagesIds.add("http://img.lakalaec.com/ad/cb56a1a6-6c33-41e4-9c3c-363f4ec6b728.jpg");
+        if (mWebDatas == null) {
+            mWebDatas = new ArrayList<>();
+        }
 
-        mImageViewsList = new ArrayList<ImageView>();
+        mImageViewsList = new ArrayList<View>();
         mDotViewsList = new ArrayList<View>();
     }
 
     private void initUI(Context context) {
         LayoutInflater.from(context).inflate(R.layout.view_picsilde, this, true);
         mDotGroup = (LinearLayout) findViewById(R.id.dot_group);
-//        BitmapUtils bitmapUtils = new BitmapUtils(context);
-//
-        for (int i = 0; i < mWebImagesIds.size(); i++) {
-            ImageView view = new ImageView(context);
+
+        for (int i = 0; i < mWebDatas.size(); i++) {
+            View viewItem = LayoutInflater.from(context).inflate(R.layout.view_customitem, null);
+            ImageView iconIv = (ImageView) viewItem.findViewById(R.id.item_pic_iv);
+            TextView titleTv = (TextView) viewItem.findViewById(R.id.item_info_tv);
+
             Glide.with(context)
-                    .load(mWebImagesIds.get(i))
-                    .into(view);
-            view.setScaleType(ImageView.ScaleType.FIT_XY);
-            mImageViewsList.add(view);
+                    .load(mWebDatas.get(i).getSmall_icon())
+                    .into(iconIv);
+
+            titleTv.setText(mWebDatas.get(i).getTitle());
+
+            mImageViewsList.add(viewItem);
 
             View dot = mDotGroup.getChildAt(i);
             dot.setVisibility(VISIBLE);
@@ -125,7 +135,9 @@ public class PicSlideView extends FrameLayout {
             mImageViewsList.get(position).setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mContext,position+"",Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(mContext, VideoDetailActivity.class);
+                    intent.putExtra("data", mWebDatas.get(position));
+                    mContext.startActivity(intent);
                 }
             });
 
@@ -205,19 +217,9 @@ public class PicSlideView extends FrameLayout {
         public void run() {
             synchronized (mViewPager) {
                 mCurrentId = (mCurrentId + 1) % mImageViewsList.size();
-                mHanlder.obtainMessage().sendToTarget();
+                mHandler.obtainMessage().sendToTarget();
             }
         }
     }
 
-    private void destoryBitmaps() {
-        for (int i = 0; i < IMAGE_COUNT; i++) {
-            ImageView imageView = mImageViewsList.get(i);
-            Drawable drawable = imageView.getDrawable();
-            if (drawable != null) {
-                //解除drawable对view的引用
-                drawable.setCallback(null);
-            }
-        }
-    }
 }

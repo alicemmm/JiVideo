@@ -138,6 +138,7 @@ public class VideoFragment extends Fragment {
         class ViewHolder {
             ImageView itemPic;
             TextView itemInfo;
+            ImageView itemDp;
         }
 
 
@@ -149,11 +150,13 @@ public class VideoFragment extends Fragment {
                 view = inflater.inflate(R.layout.view_customitem, null);
                 holder.itemPic = (ImageView) view.findViewById(R.id.item_pic_iv);
                 holder.itemInfo = (TextView) view.findViewById(R.id.item_info_tv);
+                holder.itemDp = (ImageView) view.findViewById(R.id.item_dp_iv);
                 view.setTag(holder);
             } else {
                 holder = (ViewHolder) view.getTag();
             }
 
+            holder.itemDp.setVisibility(View.GONE);
             holder.itemInfo.setText(hotVideoData.getHots().get(i).getTitle());
             Glide.with(mContext)
                     .load(hotVideoData.getHots().get(i).getSmall_icon())

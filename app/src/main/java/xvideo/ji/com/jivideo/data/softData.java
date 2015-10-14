@@ -3,11 +3,20 @@ package xvideo.ji.com.jivideo.data;
 
 public class SoftData {
 
+    private int id;
     private String icon;
     private String title;
     private String introduce;
     private int point;
     private String downloadUrl;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getIcon() {
         return icon;
