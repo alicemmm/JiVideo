@@ -22,8 +22,8 @@ import xvideo.ji.com.jivideo.data.HotVideoData;
 import xvideo.ji.com.jivideo.network.VolleyRequestManager;
 import xvideo.ji.com.jivideo.utils.JiLog;
 
-public class HotVideoManager {
-    private static final String TAG = HotVideoManager.class.getSimpleName();
+public class MainVideoManager {
+    private static final String TAG = MainVideoManager.class.getSimpleName();
 
     public interface onResponseListener {
         void onFailure(String errMsg);
@@ -37,12 +37,12 @@ public class HotVideoManager {
 
     private onResponseListener mListener;
 
-    public HotVideoManager(Context mContext, onResponseListener mListener) {
+    public MainVideoManager(Context mContext, onResponseListener mListener) {
         this.mContext = mContext;
         this.mListener = mListener;
     }
 
-    public HotVideoManager(Context mContext) {
+    public MainVideoManager(Context mContext) {
         this.mContext = mContext;
     }
 
@@ -53,7 +53,7 @@ public class HotVideoManager {
     public void req() {
         final RequestQueue requestQueue = VolleyRequestManager.getRequestQueue();
 
-        mRequest = new StringRequest(Request.Method.POST, Consts.GET_HOTVIDEO_URL,
+        mRequest = new StringRequest(Request.Method.POST, Consts.GET_MAINVIDEO_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String response) {
@@ -115,6 +115,7 @@ public class HotVideoManager {
                     hotsData.setVideo(object.optString("video"));
                     hotsData.setVideo2(object.optString("video2"));
                     hotsData.setWatch(object.optInt("watch"));
+                    hotsData.setIndexType(object.optInt("indextype"));
                     hotsDataList.add(hotsData);
                 }
                 hotVideoData.setHots(hotsDataList);

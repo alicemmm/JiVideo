@@ -10,12 +10,10 @@ import android.widget.TextView;
 
 import xvideo.ji.com.jivideo.R;
 
-/**
- * Created by Domon on 15-9-18.
- */
 public class CustomItemFrameLayout extends FrameLayout {
     private ImageView mPicIv;
     private TextView mInfoTv;
+    private ImageView mDpTabIv;
 
     public CustomItemFrameLayout(Context context) {
         super(context);
@@ -27,6 +25,8 @@ public class CustomItemFrameLayout extends FrameLayout {
         View view = LayoutInflater.from(context).inflate(R.layout.view_customitem, this);
         mPicIv = (ImageView) findViewById(R.id.item_pic_iv);
         mInfoTv = (TextView) findViewById(R.id.item_info_tv);
+        mDpTabIv = (ImageView) findViewById(R.id.item_dp_iv);
+        mDpTabIv.setImageResource(R.mipmap.dp1080p_02);
     }
 
     /**
@@ -37,6 +37,10 @@ public class CustomItemFrameLayout extends FrameLayout {
     public void setItemPic(int bitmap) {
 //        mPicIv.setImageBitmap(bitmap);
         mPicIv.setImageResource(bitmap);
+    }
+
+    public ImageView getItemImageView() {
+        return mPicIv;
     }
 
     /**

@@ -61,6 +61,7 @@ public class HotVideoData {
          * video :
          * video2 :
          * watch : 7641
+         * indexType : 1
          */
 
         private String area;
@@ -78,6 +79,7 @@ public class HotVideoData {
         private String video;
         private String video2;
         private int watch;
+        private int indexType;
 
         public HotsEntity() {
 
@@ -99,6 +101,7 @@ public class HotVideoData {
             video = source.readString();
             video2 = source.readString();
             watch = source.readInt();
+            indexType = source.readInt();
         }
 
         @Override
@@ -123,6 +126,7 @@ public class HotVideoData {
             dest.writeString(video);
             dest.writeString(video2);
             dest.writeInt(watch);
+            dest.writeInt(indexType);
         }
 
         public static final Creator<HotsEntity> CREATOR = new Creator<HotsEntity>() {
@@ -255,6 +259,14 @@ public class HotVideoData {
 
         public int getWatch() {
             return watch;
+        }
+
+        public int getIndexType() {
+            return indexType;
+        }
+
+        public void setIndexType(int indexType) {
+            this.indexType = indexType;
         }
     }
 }
