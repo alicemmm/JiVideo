@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -7,91 +8,105 @@
     <!--Toolbar-->
     <include layout="@layout/custom_toolbar" />
 
-    <ImageView
-        android:id="@+id/detail_video_big_pic_iv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:background="@mipmap/detail_icon" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/detail_video_icon_iv"
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:scaleType="fitXY"
-            android:background="@mipmap/detail_icon2" />
+            android:id="@+id/detail_video_big_pic_iv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/detail_icon"
+            android:scaleType="fitXY" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/detail_video_title_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="funny videos NO.9"
-                android:textColor="#ff000000"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/detail_video_content_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="india\nindia\n4833watching" />
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/detail_video_download_iv"
-                android:layout_width="wrap_content"
+                android:id="@+id/detail_video_icon_iv"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:background="@mipmap/detail_icon2"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:src="@mipmap/download" />
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/detail_video_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="funny videos NO.9"
+                    android:textColor="#ff000000"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/detail_video_content_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="india\nindia\n4833watching" />
+
+                <ImageView
+                    android:id="@+id/detail_video_download_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@mipmap/download" />
+
+                <TextView
+                    android:id="@+id/detail_video_need_point_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20Points"
+                    android:textColor="#ff000000"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/detail_video_need_point_tv"
+                android:id="@+id/detail_video_more_detail_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20Points"
-                android:textColor="#ff000000"
-                android:textSize="14sp" />
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="10dp"
+                android:text="More Points>"
+                android:textColor="@android:color/holo_red_dark" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/detail_video_more_detail_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="10dp"
-            android:text="More Points>"
-            android:textColor="@android:color/holo_red_dark" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#ff000000" />
 
+        <TextView
+            android:id="@+id/detail_video_small_point_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Click on ads for point. one click will get 1 points"
+            android:textColor="@android:color/holo_red_dark" />
     </LinearLayout>
 
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#ff000000" />
-
-    <TextView
-        android:id="@+id/detail_video_small_point_tv"
-        android:layout_width="match_parent"
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="Click on ads for point. one click will get 1 points"
-        android:textColor="@android:color/holo_red_dark" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"></com.google.android.gms.ads.AdView>
 
-</LinearLayout>
+</RelativeLayout>
