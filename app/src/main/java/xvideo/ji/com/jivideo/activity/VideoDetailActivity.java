@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,6 +46,9 @@ public class VideoDetailActivity extends BaseActivity {
 
     @Bind(R.id.detail_video_small_point_tv)
     TextView mSmallPointTv;
+
+    @Bind(R.id.adView)
+    AdView mAdView;
 
     @OnClick(R.id.detail_video_more_detail_tv)
     void onClickMorePoint() {
@@ -91,5 +96,8 @@ public class VideoDetailActivity extends BaseActivity {
         mContentTv.setText(mHotsEntity.getDescription());
         mBigPointTv.setText(mHotsEntity.getHigh_point() + "Points");
         mSmallPointTv.setText("Click on ads for point. one click will get " + mHotsEntity.getLow_point() + " points");
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 }
