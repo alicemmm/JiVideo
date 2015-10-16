@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="4dp">
+
+    <ImageView
+        android:id="@+id/item_pic_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/def_item_bg"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:id="@+id/item_info_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#44999999"
+        android:paddingLeft="5dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="#ffffff" />
+
+    <ImageView
+        android:id="@+id/item_dp_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/dp1080p_01" />
+
+</FrameLayout>

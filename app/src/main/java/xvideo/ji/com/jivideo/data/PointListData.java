@@ -4,7 +4,7 @@ package xvideo.ji.com.jivideo.data;
 public class PointListData {
 
     private String title;
-    private String point;
+    private int point;
     private String time;
 
     public String getTitle() {
@@ -15,11 +15,11 @@ public class PointListData {
         this.title = title;
     }
 
-    public String getPoint() {
+    public Integer getPoint() {
         return point;
     }
 
-    public void setPoint(String point) {
+    public void setPoint(int point) {
         this.point = point;
     }
 

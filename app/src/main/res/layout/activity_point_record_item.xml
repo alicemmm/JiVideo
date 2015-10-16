@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:singleLine="true"
             android:text="adviewsslider"
             android:textColor="@color/Indigo_colorPrimaryDark" />
 
@@ -26,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:singleLine="true"
             android:text="Point +18"
             android:textColor="@color/background_floating_material_dark" />
 
@@ -35,6 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:singleLine="true"
             android:text="2015-09-12"
             android:textColor="@color/background_floating_material_dark" />
 

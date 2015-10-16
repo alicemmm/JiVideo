@@ -2,13 +2,17 @@ package xvideo.ji.com.jivideo.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -16,14 +20,59 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.data.PointListData;
+import xvideo.ji.com.jivideo.manager.PointExpenseManager;
 
 public class ExpenseRecordActivity extends ActionBarActivity {
     private static final String TAG = ExpenseRecordActivity.class.getSimpleName();
 
+    private static final int HANDLE_FAILURE = 0;
+    private static final int HANDLE_SUCCESS = 1;
+
     private Context mContext;
+
+    private PointExpenseManager mManager;
+
+    private ArrayList<PointListData> mDatas;
 
     @Bind(R.id.custom_toolbar)
     Toolbar mToolbar;
+
+    @Bind(R.id.expense_record_lv)
+    ListView mListView;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case HANDLE_FAILURE:
+                    doHandlerFailure(msg.obj);
+                    break;
+                case HANDLE_SUCCESS:
+                    doHandlerSuccess(msg.obj);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private void doHandlerFailure(Object obj) {
+        if (obj == null) {
+            return;
+        }
+        Toast.makeText(mContext, obj.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    private void doHandlerSuccess(Object obj) {
+        if (obj == null) {
+            return;
+        }
+
+        mDatas = (ArrayList<PointListData>) obj;
+
+        mListView.setAdapter(new PointExpenseAdapter(mContext, mDatas));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +83,15 @@ public class ExpenseRecordActivity extends ActionBarActivity {
         ButterKnife.bind(this);
 
         initToolBar();
+
+        init();
+
+        asyncPointRecordReq();
     }
 
     private void initToolBar() {
         mToolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title_text));
-        mToolbar.setTitle("Points Records");
+        mToolbar.setTitle("Points Expense");
 
         setSupportActionBar(mToolbar);
     }
@@ -47,7 +100,37 @@ public class ExpenseRecordActivity extends ActionBarActivity {
 
     }
 
-    private class PointRecordAdapter extends BaseAdapter {
+    private void asyncPointRecordReq() {
+        if (mManager == null) {
+            mManager = new PointExpenseManager(mContext, new PointExpenseManager.onResponseListener() {
+                @Override
+                public void onFailure(String errMsg) {
+                    Message msg = new Message();
+                    msg.what = HANDLE_FAILURE;
+                    msg.obj = errMsg;
+                    mHandler.sendMessage(msg);
+                }
+
+                @Override
+                public void onSuccess(ArrayList<PointListData> datas) {
+                    Message msg = new Message();
+                    msg.what = HANDLE_SUCCESS;
+                    msg.obj = datas;
+                    mHandler.sendMessage(msg);
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mManager != null) {
+            mManager.cancel();
+        }
+    }
+
+    private class PointExpenseAdapter extends BaseAdapter {
 
         private Context context;
         private LayoutInflater inflater;
@@ -59,7 +142,7 @@ public class ExpenseRecordActivity extends ActionBarActivity {
             TextView timeTv;
         }
 
-        public PointRecordAdapter(Context context, ArrayList<PointListData> datas) {
+        public PointExpenseAdapter(Context context, ArrayList<PointListData> datas) {
             this.context = context;
             this.datas = datas;
             inflater = LayoutInflater.from(context);

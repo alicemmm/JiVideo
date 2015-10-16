@@ -96,15 +96,18 @@ public class PicSlideView extends FrameLayout {
         mDotGroup = (LinearLayout) findViewById(R.id.dot_group);
 
         for (int i = 0; i < mWebDatas.size(); i++) {
-            View viewItem = LayoutInflater.from(context).inflate(R.layout.view_customitem, null);
+            View viewItem = LayoutInflater.from(context).inflate(R.layout.view_slide_customitem, null);
             ImageView iconIv = (ImageView) viewItem.findViewById(R.id.item_pic_iv);
             TextView titleTv = (TextView) viewItem.findViewById(R.id.item_info_tv);
+            TextView watching = (TextView) viewItem.findViewById(R.id.item_watch_tv);
 
             Glide.with(context)
                     .load(mWebDatas.get(i).getSmall_icon())
                     .into(iconIv);
 
             titleTv.setText(mWebDatas.get(i).getTitle());
+
+            watching.setText(mWebDatas.get(i).getWatch() + mContext.getResources().getString(R.string.watching));
 
             mImageViewsList.add(viewItem);
 

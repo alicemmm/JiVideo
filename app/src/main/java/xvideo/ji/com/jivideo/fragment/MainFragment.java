@@ -99,20 +99,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        Glide.with(mContext).load(mPicOtherDatas.get(0).getSmall_icon()).into(mTopItem1Item.getItemImageView());
-        mTopItem1Item.setItemInfo(mPicOtherDatas.get(0).getTitle());
-
-        Glide.with(mContext).load(mPicOtherDatas.get(1).getSmall_icon()).into(mTopItem2Item.getItemImageView());
-        mTopItem2Item.setItemInfo(mPicOtherDatas.get(1).getTitle());
-
-        Glide.with(mContext).load(mPicOtherDatas.get(2).getSmall_icon()).into(mBottomItem1Item.getItemImageView());
-        mBottomItem1Item.setItemInfo(mPicOtherDatas.get(2).getTitle());
-
-        Glide.with(mContext).load(mPicOtherDatas.get(3).getSmall_icon()).into(mBottomItem2Item.getItemImageView());
-        mBottomItem2Item.setItemInfo(mPicOtherDatas.get(3).getTitle());
-
-        Glide.with(mContext).load(mPicOtherDatas.get(4).getSmall_icon()).into(mBottomItem3Item.getItemImageView());
-        mBottomItem3Item.setItemInfo(mPicOtherDatas.get(4).getTitle());
+        int picOtherSize = mPicOtherDatas.size();
+        for (int i = 0; i < picOtherSize; ++i) {
+            Glide.with(mContext).load(mPicOtherDatas.get(i).getSmall_icon()).into(customItemFrameLayouts.get(i).getItemImageView());
+            customItemFrameLayouts.get(i).setItemInfo(mPicOtherDatas.get(i).getTitle());
+        }
 
     }
 
@@ -149,11 +140,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         customItemFrameLayouts.add(mBottomItem2Item);
         customItemFrameLayouts.add(mBottomItem3Item);
 
-        mTopItem1Item.setOnClickListener(this);
-        mTopItem2Item.setOnClickListener(this);
-        mBottomItem1Item.setOnClickListener(this);
-        mBottomItem2Item.setOnClickListener(this);
-        mBottomItem3Item.setOnClickListener(this);
+        customItemFrameLayouts.get(0).setOnClickListener(this);
+        customItemFrameLayouts.get(1).setOnClickListener(this);
+        customItemFrameLayouts.get(2).setOnClickListener(this);
+        customItemFrameLayouts.get(3).setOnClickListener(this);
+        customItemFrameLayouts.get(4).setOnClickListener(this);
     }
 
     @Override
@@ -189,24 +180,28 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        switch (id) {
-            case R.id.top_item1_fl:
-                onClickDetailVideo(mPicOtherDatas.get(0));
-                break;
-            case R.id.top_item2_fl:
-                onClickDetailVideo(mPicOtherDatas.get(1));
-                break;
-            case R.id.bottom_item1_fl:
-                onClickDetailVideo(mPicOtherDatas.get(2));
-                break;
-            case R.id.bottom_item2_fl:
-                onClickDetailVideo(mPicOtherDatas.get(3));
-                break;
-            case R.id.bottom_item3_fl:
-                onClickDetailVideo(mPicOtherDatas.get(4));
-                break;
-            default:
-                break;
+        try {
+            switch (id) {
+                case R.id.top_item1_fl:
+                    onClickDetailVideo(mPicOtherDatas.get(0));
+                    break;
+                case R.id.top_item2_fl:
+                    onClickDetailVideo(mPicOtherDatas.get(1));
+                    break;
+                case R.id.bottom_item1_fl:
+                    onClickDetailVideo(mPicOtherDatas.get(2));
+                    break;
+                case R.id.bottom_item2_fl:
+                    onClickDetailVideo(mPicOtherDatas.get(3));
+                    break;
+                case R.id.bottom_item3_fl:
+                    onClickDetailVideo(mPicOtherDatas.get(4));
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

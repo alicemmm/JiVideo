@@ -33,6 +33,7 @@ import xvideo.ji.com.jivideo.fragment.MainFragment;
 import xvideo.ji.com.jivideo.fragment.MoreFragment;
 import xvideo.ji.com.jivideo.fragment.SoftFragment;
 import xvideo.ji.com.jivideo.fragment.VideoFragment;
+import xvideo.ji.com.jivideo.service.CoreService;
 import xvideo.ji.com.jivideo.utils.JiLog;
 import xvideo.ji.com.jivideo.utils.Utils;
 
@@ -111,7 +112,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         initAd();
 
-        startShowAd();
+        startService(new Intent(mContext, CoreService.class));
+
+//        startShowAd();
     }
 
     private void initAd() {
@@ -126,10 +129,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Toast.makeText(mContext, "ad close", Toast.LENGTH_SHORT).show();
             }
         });
+
+        requestNewInterstitial();
     }
 
     private void requestNewInterstitial() {
-        //todo SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(Utils.getDevId())
                 .build();
@@ -151,7 +155,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     public void stopShowAd() {
-        mScheduledExecutorService.shutdown();
+        if (mScheduledExecutorService != null) {
+            mScheduledExecutorService.shutdown();
+        }
     }
 
     private void initMenu() {

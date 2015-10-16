@@ -10,6 +10,8 @@ public final class Consts {
     public static final String GET_HOTVIDEO_URL = SERVICE_DOMAIN + "/datas.ashx";
     public static final String GET_MAINVIDEO_URL = SERVICE_DOMAIN + "/getindex.ashx";
     public static final String GET_APP_LIST = SERVICE_DOMAIN + "/getAppList.ashx";
+    public static final String GET_POINT_RECORD = SERVICE_DOMAIN + "";
+    public static final String GET_POINT_EXPENSE = SERVICE_DOMAIN + "";
 
     public static final String APP_ROOT_DIRECTORY = "JiVideo";
     public static final String APP_APK_DIRECTORY = "APK";
