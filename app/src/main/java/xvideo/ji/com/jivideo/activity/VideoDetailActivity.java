@@ -17,9 +17,6 @@ import butterknife.OnClick;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.data.HotVideoData;
 
-/**
- * Created by YinJim on 15/9/29.
- */
 public class VideoDetailActivity extends BaseActivity {
     private static final String TAG = VideoDetailActivity.class.getSimpleName();
 
@@ -55,8 +52,8 @@ public class VideoDetailActivity extends BaseActivity {
 
     }
 
-    @OnClick(R.id.detail_video_download_iv)
-    void onClickDownload() {
+    @OnClick(R.id.detail_video_play_tv)
+    void onClickPlay() {
 
     }
 
@@ -85,7 +82,7 @@ public class VideoDetailActivity extends BaseActivity {
 
     private void initToolBar() {
         mToolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title_text));
-        mToolbar.setTitle("My Point: " + mHotsEntity.getScore());
+        mToolbar.setTitle(getString(R.string.my_point) + " " + mHotsEntity.getScore());
         mToolbar.setPadding(50, 0, 0, 0);
     }
 
@@ -93,9 +90,10 @@ public class VideoDetailActivity extends BaseActivity {
         Glide.with(mContext).load(mHotsEntity.getMain_icon()).into(mBigPicIv);
         Glide.with(mContext).load(mHotsEntity.getSmall_icon()).into(mIconIv);
         mTitleTv.setText(mHotsEntity.getTitle());
-        mContentTv.setText(mHotsEntity.getDescription());
-        mBigPointTv.setText(mHotsEntity.getHigh_point() + "Points");
-        mSmallPointTv.setText("Click on ads for point. one click will get " + mHotsEntity.getLow_point() + " points");
+        mContentTv.setText(mHotsEntity.getDescription() + "\n" + mHotsEntity.getWatch() + " " + getString(R.string.watching));
+        mBigPointTv.setText(mHotsEntity.getHigh_point() + getString(R.string.points));
+        mSmallPointTv.setText(getString(R.string.click_point) + " " + mHotsEntity.getLow_point()
+                + " " + getString(R.string.points2));
 
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);

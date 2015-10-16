@@ -33,6 +33,8 @@ public class VideoFragment extends Fragment {
     private Context mContext;
     private HotVideoData mHotVideoData;
 
+    private HotVideoManager mManager;
+
     private MyAdapter mMyAdapter;
 
     private Handler mHandler = new Handler() {
@@ -76,26 +78,6 @@ public class VideoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_video, container, false);
         mContext = getActivity();
 
-        HotVideoManager manager = new HotVideoManager(mContext, new HotVideoManager.onResponseListener() {
-            @Override
-            public void onFailure(String errMsg) {
-                Message message = new Message();
-                message.what = HANDLE_FAILURE;
-                message.obj = errMsg;
-                mHandler.sendMessage(message);
-            }
-
-            @Override
-            public void onSuccess(HotVideoData hotVideoData) {
-                Message message = new Message();
-                message.what = HANDLE_SUCCESS;
-                message.obj = hotVideoData;
-                mHandler.sendMessage(message);
-            }
-        });
-
-        manager.req();
-
         mGridView = (GridView) view.findViewById(R.id.video_gridview);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -107,6 +89,44 @@ public class VideoFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        asyncHotVideoReq();
+    }
+
+    private void asyncHotVideoReq() {
+        if (mManager == null) {
+            mManager = new HotVideoManager(mContext, new HotVideoManager.onResponseListener() {
+                @Override
+                public void onFailure(String errMsg) {
+                    Message message = new Message();
+                    message.what = HANDLE_FAILURE;
+                    message.obj = errMsg;
+                    mHandler.sendMessage(message);
+                }
+
+                @Override
+                public void onSuccess(HotVideoData hotVideoData) {
+                    Message message = new Message();
+                    message.what = HANDLE_SUCCESS;
+                    message.obj = hotVideoData;
+                    mHandler.sendMessage(message);
+                }
+            });
+        }
+
+        mManager.req();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mManager != null) {
+            mManager.cancel();
+        }
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -139,6 +159,7 @@ public class VideoFragment extends Fragment {
             ImageView itemPic;
             TextView itemInfo;
             ImageView itemDp;
+            TextView itemTitle;
         }
 
 
@@ -151,13 +172,15 @@ public class VideoFragment extends Fragment {
                 holder.itemPic = (ImageView) view.findViewById(R.id.item_pic_iv);
                 holder.itemInfo = (TextView) view.findViewById(R.id.item_info_tv);
                 holder.itemDp = (ImageView) view.findViewById(R.id.item_dp_iv);
+                holder.itemTitle = (TextView) view.findViewById(R.id.item_title_tv);
                 view.setTag(holder);
             } else {
                 holder = (ViewHolder) view.getTag();
             }
 
             holder.itemDp.setVisibility(View.GONE);
-            holder.itemInfo.setText(hotVideoData.getHots().get(i).getTitle());
+            holder.itemInfo.setText(hotVideoData.getHots().get(i).getWatch() + getString(R.string.watching));
+            holder.itemTitle.setText(hotVideoData.getHots().get(i).getTitle());
             Glide.with(mContext)
                     .load(hotVideoData.getHots().get(i).getSmall_icon())
                     .into(holder.itemPic);

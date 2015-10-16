@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@mipmap/ic_launcher"
+        android:layout_marginBottom="20dp"
         android:scaleType="fitXY" />
 
     <TextView
@@ -16,9 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
         android:background="#44999999"
         android:paddingLeft="5dp"
-        android:text="hello world"
+        android:text=""
         android:textColor="#ffffff" />
 
     <ImageView
@@ -26,4 +28,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/dp1080p_01" />
+
+    <TextView
+        android:id="@+id/item_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_gravity="bottom"
+        android:singleLine="true"
+        android:text="" />
 </FrameLayout>

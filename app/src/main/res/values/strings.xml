@@ -6,8 +6,21 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
 
+    <string name="main_home">Home</string>
+    <string name="main_video">Hot movies</string>
+    <string name="main_list">Earn points</string>
+    <string name="main_more">More</string>
+
+    <string name="my_point">My Point:</string>
+    <string name="points">Points</string>
+    <string name="points2">points</string>
+    <string name="click_point">Click on ads for point. one click will get</string>
+    <string name="more_point">More Points></string>
+
+    <string name="formal">Formal</string>
+    <string name="watching">watching</string>
+
     <!-- test for ad -->
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-
-
+    <!--<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
+    <string name="banner_ad_unit_id">ca-app-pub-5840358239603737/2207165802</string>
 </resources>

@@ -56,13 +56,19 @@
                     android:layout_height="wrap_content"
                     android:text="india\nindia\n4833watching" />
 
-                <ImageView
-                    android:id="@+id/detail_video_download_iv"
+                <TextView
+                    android:id="@+id/detail_video_play_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
-                    android:src="@mipmap/download" />
+                    android:background="@mipmap/btn_paly_normal"
+                    android:drawableLeft="@mipmap/play_icon"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="@string/formal"
+                    android:textColor="#ff000000" />
+
 
                 <TextView
                     android:id="@+id/detail_video_need_point_tv"

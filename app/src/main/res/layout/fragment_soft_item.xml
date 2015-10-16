@@ -14,8 +14,8 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
-            android:scaleType="fitXY"
             android:layout_margin="4dp"
+            android:scaleType="fitXY"
             android:src="@mipmap/detail_icon2" />
 
         <LinearLayout
@@ -41,6 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:maxLines="2"
                 android:text="Hd no video decoding"
                 android:textSize="12sp" />
 

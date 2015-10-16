@@ -3,6 +3,8 @@ package xvideo.ji.com.jivideo.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -13,16 +15,32 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import xvideo.ji.com.jivideo.R;
+import xvideo.ji.com.jivideo.config.Consts;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
 import xvideo.ji.com.jivideo.fragment.MoreFragment;
 import xvideo.ji.com.jivideo.fragment.SoftFragment;
 import xvideo.ji.com.jivideo.fragment.VideoFragment;
+import xvideo.ji.com.jivideo.utils.JiLog;
+import xvideo.ji.com.jivideo.utils.Utils;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int TIME_GOOGLE_AD_SHOW = 10;
+
     @Bind(R.id.custom_toolbar)
     Toolbar mToolbar;
 
@@ -52,11 +70,30 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private MainFragment mMainFragment;
     private SoftFragment mSoftFragment;
     private MoreFragment mMoreFragment;
-    private String[] strs = {"Points Records", "Expense Records", "Updates Version", "About"};
+    private String[] strs;
     private ArrayAdapter mArrayAdapter;
     private Context mContext;
     private int btnIndex;
     private int currentBtnIndex = 0;
+
+    private InterstitialAd mInterstitialAd;
+
+    private ScheduledExecutorService mScheduledExecutorService;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            showAd();
+        }
+    };
+
+    private class TimeShowAd implements Runnable {
+        @Override
+        public void run() {
+            mHandler.obtainMessage().sendToTarget();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +108,54 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         initMenu();
 
         init();
+
+        initAd();
+
+        startShowAd();
+    }
+
+    private void initAd() {
+        mInterstitialAd = new InterstitialAd(mContext);
+        mInterstitialAd.setAdUnitId(Consts.AD_GOOGLE_TABLE_ID);
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                requestNewInterstitial();
+                Toast.makeText(mContext, "ad close", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void requestNewInterstitial() {
+        //todo SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(Utils.getDevId())
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+    private void showAd() {
+        JiLog.error(TAG, "prepare show ad");
+        if (mInterstitialAd.isLoaded()) {
+            JiLog.error(TAG, "show ad");
+            mInterstitialAd.show();
+        }
+    }
+
+    public void startShowAd() {
+        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        mScheduledExecutorService.scheduleAtFixedRate(new TimeShowAd(), 1, TIME_GOOGLE_AD_SHOW, TimeUnit.SECONDS);
+    }
+
+    public void stopShowAd() {
+        mScheduledExecutorService.shutdown();
     }
 
     private void initMenu() {
+        strs = getResources().getStringArray(R.array.titles_list);
         mArrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, strs);
         mLeftMenuLv.setAdapter(mArrayAdapter);
 
@@ -103,7 +185,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void initToolbar() {
         mToolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title_text));
-        mToolbar.setTitle("JiVideo");
+        mToolbar.setTitle(getString(R.string.app_name));
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -157,13 +239,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mMainBottomLls[3].setOnClickListener(this);
     }
 
-    private void checkUpdate(){
+    private void checkUpdate() {
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopShowAd();
     }
 
     @Override
@@ -180,6 +263,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 break;
             case R.id.main_bottom4_ll:
                 btnIndex = 3;
+                showAd();
                 break;
             default:
                 break;

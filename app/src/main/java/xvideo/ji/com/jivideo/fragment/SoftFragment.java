@@ -1,15 +1,15 @@
 package xvideo.ji.com.jivideo.fragment;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,20 +27,60 @@ import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.data.SoftData;
 import xvideo.ji.com.jivideo.download.DownloadManager;
 import xvideo.ji.com.jivideo.download.DownloadService;
+import xvideo.ji.com.jivideo.manager.SoftListManager;
 import xvideo.ji.com.jivideo.utils.JiLog;
 import xvideo.ji.com.jivideo.utils.Utils;
 
 public class SoftFragment extends Fragment {
     private static final String TAG = SoftFragment.class.getSimpleName();
 
+    private static final int HANDLE_FAILURE = 0;
+    private static final int HANDLE_SUCCESS = 1;
+
     private Context mContext;
     private ListView mListView;
 
-    private ArrayList<SoftData> datas;
+    private ArrayList<SoftData> mDatas;
 
     private String mLocalFile;
 
-    DownloadManager manager;
+    private SoftListManager mSoftListManager;
+    private DownloadManager mDownloadManager;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case HANDLE_FAILURE:
+                    doHandlerFailure(msg.obj);
+                    break;
+                case HANDLE_SUCCESS:
+                    doHandlerSuccess(msg.obj);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private void doHandlerFailure(Object obj) {
+        if (obj == null) {
+            return;
+        }
+        Toast.makeText(mContext, obj.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    private void doHandlerSuccess(Object obj) {
+        if (obj == null) {
+            return;
+        }
+
+        mDatas = (ArrayList<SoftData>) obj;
+
+        mListView.setAdapter(new SoftListAdapter(mContext, mDatas));
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,71 +92,44 @@ public class SoftFragment extends Fragment {
     }
 
     private void init() {
-        datas = new ArrayList<>();
-        manager = DownloadService.getDownloadManager(mContext);
+        mDownloadManager = DownloadService.getDownloadManager(mContext);
 
-        for (int i = 0; i < 2; ++i) {
-            SoftData data = new SoftData();
-            data.setTitle("title" + i);
-            data.setIcon("http://source.jisuoping.com/image/20150924170007721.png");
-            data.setIntroduce("this is introduce");
-            data.setPoint(2);
-            data.setDownloadUrl("http://jsp.dx1200.com/apk/2015/new-taohuayuan-12079.apk");
-            datas.add(data);
-        }
-
-
-        mListView.setAdapter(new SoftListAdapter(mContext, datas));
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                dialogToDownloadApk(datas.get(i));
+                startDownload(mDatas.get(i));
             }
         });
-
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        asyncSoftListReq();
+    }
 
-    private void dialogToDownloadApk(final SoftData data) {
-        final AlertDialog dialog = new AlertDialog.Builder(mContext).create();
-        View view = LayoutInflater.from(mContext).inflate(R.layout.dialog1, null);
-        TextView titleTv = (TextView) view.findViewById(R.id.dialog_title_tv);
-        TextView contentTv = (TextView) view.findViewById(R.id.dialog_desc_tv);
-        ImageView closeIv = (ImageView) view.findViewById(R.id.dialog_close_iv);
-        Button cancelBtn = (Button) view.findViewById(R.id.dialog_positive_btn);
-        Button okBtn = (Button) view.findViewById(R.id.dialog_update_negative_btn);
-        titleTv.setText("Download?");
-        contentTv.setText("Download the installation and open the application to get " + data.getPoint() + " points, download it?");
-        closeIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!getActivity().isFinishing()) {
-                    dialog.dismiss();
+    private void asyncSoftListReq() {
+        if (mSoftListManager == null) {
+            mSoftListManager = new SoftListManager(mContext, new SoftListManager.onResponseListener() {
+                @Override
+                public void onFailure(String errMsg) {
+                    Message msg = new Message();
+                    msg.what = HANDLE_FAILURE;
+                    msg.obj = errMsg;
+                    mHandler.sendMessage(msg);
                 }
-            }
-        });
 
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!getActivity().isFinishing()) {
-                    dialog.dismiss();
+                @Override
+                public void onSuccess(ArrayList<SoftData> softDatas) {
+                    Message msg = new Message();
+                    msg.what = HANDLE_SUCCESS;
+                    msg.obj = softDatas;
+                    mHandler.sendMessage(msg);
                 }
-            }
-        });
+            });
+        }
 
-        okBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDownload(data);
-                if (!getActivity().isFinishing()) {
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        dialog.setView(view);
-        dialog.show();
+        mSoftListManager.req();
     }
 
     private void startDownload(SoftData data) {
@@ -137,9 +150,18 @@ public class SoftFragment extends Fragment {
         }
 
         try {
-            manager.addNewDownload(data.getDownloadUrl(), data.getTitle(), mLocalFile, 1, true, false, true, new DownloadRequestCallBack());
+            //todo 1 should be id
+            mDownloadManager.addNewDownload(data.getDownloadUrl(), data.getTitle(), mLocalFile, 1, true, false, true, new DownloadRequestCallBack());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mSoftListManager != null) {
+            mSoftListManager.cancel();
         }
     }
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="titles_list">
+        <item>Points Records</item>
+        <item>Expense Records</item>
+        <item>Updates Version</item>
+        <item>About</item>
+    </string-array>
+
+</resources>

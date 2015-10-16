@@ -42,8 +42,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private MainVideoManager mManager;
 
-    List<HotVideoData.HotsEntity> mPicSldeDatas;
-    List<HotVideoData.HotsEntity> mPicOtherDatas;
+    private List<HotVideoData.HotsEntity> mPicSldeDatas;
+    private List<HotVideoData.HotsEntity> mPicOtherDatas;
+
+    private ArrayList<CustomItemFrameLayout> customItemFrameLayouts;
 
     @Bind(R.id.slide_main_psv)
     PicSlideView mPicSlideView;
@@ -128,11 +130,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void findViewById(View view) {
+        mTopItem1Item = (CustomItemFrameLayout) view.findViewById(R.id.top_item1_fl);
+        mTopItem2Item = (CustomItemFrameLayout) view.findViewById(R.id.top_item2_fl);
         mBottomItem1Item = (CustomItemFrameLayout) view.findViewById(R.id.bottom_item1_fl);
         mBottomItem2Item = (CustomItemFrameLayout) view.findViewById(R.id.bottom_item2_fl);
         mBottomItem3Item = (CustomItemFrameLayout) view.findViewById(R.id.bottom_item3_fl);
-        mTopItem1Item = (CustomItemFrameLayout) view.findViewById(R.id.top_item1_fl);
-        mTopItem2Item = (CustomItemFrameLayout) view.findViewById(R.id.top_item2_fl);
         mPicSlideView = (PicSlideView) view.findViewById(R.id.slide_main_psv);
     }
 
@@ -140,17 +142,12 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         //TODO bitmap
         Resources resources = this.getResources();
 
-        mBottomItem1Item.setItemPic(R.mipmap.ic_launcher);
-        mBottomItem1Item.setItemInfo("Bottom_Info1");
-        mBottomItem2Item.setItemPic(R.mipmap.ic_launcher);
-        mBottomItem2Item.setItemInfo("Bottom_Info2");
-        mBottomItem3Item.setItemPic(R.mipmap.ic_launcher);
-        mBottomItem3Item.setItemInfo("Bottom_Info3");
-
-        mTopItem1Item.setItemPic(R.mipmap.ic_launcher);
-        mTopItem1Item.setItemInfo("Top_Info1");
-        mTopItem2Item.setItemPic(R.mipmap.ic_launcher);
-        mTopItem2Item.setItemInfo("Top_info2");
+        customItemFrameLayouts = new ArrayList<>();
+        customItemFrameLayouts.add(mTopItem1Item);
+        customItemFrameLayouts.add(mTopItem2Item);
+        customItemFrameLayouts.add(mBottomItem1Item);
+        customItemFrameLayouts.add(mBottomItem2Item);
+        customItemFrameLayouts.add(mBottomItem3Item);
 
         mTopItem1Item.setOnClickListener(this);
         mTopItem2Item.setOnClickListener(this);
@@ -217,5 +214,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         Intent intent = new Intent(mContext, VideoDetailActivity.class);
         intent.putExtra("data", data);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mManager != null) {
+            mManager.cancel();
+        }
     }
 }
