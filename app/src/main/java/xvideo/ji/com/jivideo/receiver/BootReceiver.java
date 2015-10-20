@@ -10,6 +10,8 @@ import xvideo.ji.com.jivideo.utils.JiLog;
 public class BootReceiver extends BroadcastReceiver {
     private static final String TAG = BootReceiver.class.getSimpleName();
 
+    public static final String CORE_SERVICE = "xvideo.ji.com.jivideo.CoreReceiver";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
