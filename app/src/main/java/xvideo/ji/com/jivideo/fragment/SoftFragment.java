@@ -47,6 +47,8 @@ public class SoftFragment extends Fragment {
     private SoftListManager mSoftListManager;
     private DownloadManager mDownloadManager;
 
+    private ArrayList<String> mDownloadPackageNames;
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -88,11 +90,14 @@ public class SoftFragment extends Fragment {
         mContext = getActivity();
         mListView = (ListView) view.findViewById(R.id.soft_fragment_lv);
         init();
+
+        asyncSoftListReq();
         return view;
     }
 
     private void init() {
         mDownloadManager = DownloadService.getDownloadManager(mContext);
+        mDownloadPackageNames = new ArrayList<>();
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -105,7 +110,6 @@ public class SoftFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        asyncSoftListReq();
     }
 
     private void asyncSoftListReq() {
@@ -151,7 +155,8 @@ public class SoftFragment extends Fragment {
 
         try {
             //todo 1 should be id
-            mDownloadManager.addNewDownload(data.getDownloadUrl(), data.getTitle(), mLocalFile, 1, true, false, true, new DownloadRequestCallBack());
+            mDownloadManager.addNewDownload(data.getDownloadUrl(), data.getTitle(), mLocalFile, data.getId(),
+                    true, false, true, new DownloadRequestCallBack());
         } catch (Exception e) {
             e.printStackTrace();
         }

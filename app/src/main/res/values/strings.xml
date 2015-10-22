@@ -20,6 +20,11 @@
     <string name="formal">Formal</string>
     <string name="watching">watching</string>
 
+    <string name="point_record">Points Records</string>
+    <string name="point_expense">Points Expense</string>
+
+    <string name="get5points">Get 5 Points</string>
+
     <!-- test for ad -->
     <!--<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
     <string name="banner_ad_unit_id">ca-app-pub-5840358239603737/2207165802</string>

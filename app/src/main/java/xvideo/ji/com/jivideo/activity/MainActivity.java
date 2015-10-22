@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,18 +22,21 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.config.Consts;
+import xvideo.ji.com.jivideo.data.BaseInfoData;
+import xvideo.ji.com.jivideo.data.PointListData;
+import xvideo.ji.com.jivideo.data.ScoreDataInfo;
 import xvideo.ji.com.jivideo.fragment.MainFragment;
 import xvideo.ji.com.jivideo.fragment.MoreFragment;
 import xvideo.ji.com.jivideo.fragment.SoftFragment;
 import xvideo.ji.com.jivideo.fragment.VideoFragment;
+import xvideo.ji.com.jivideo.manager.ClientInfoManager;
+import xvideo.ji.com.jivideo.manager.PointOperateApi;
 import xvideo.ji.com.jivideo.service.CoreService;
 import xvideo.ji.com.jivideo.utils.JiLog;
 import xvideo.ji.com.jivideo.utils.Utils;
@@ -40,7 +44,94 @@ import xvideo.ji.com.jivideo.utils.Utils;
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final int TIME_GOOGLE_AD_SHOW = 10;
+    private static final int HANDLE_FAILURE = 0;
+    private static final int HANDLE_SUCCESS = 1;
+    private static final int HANDLE_POINT_FAILURE = 2;
+    private static final int HANDLE_POINT_SUCCESS = 3;
+
+    private static final int HANDLER_SCORE_RESULT = 4;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case HANDLE_FAILURE:
+                    doHandlerFailure(msg.obj);
+                    break;
+                case HANDLE_SUCCESS:
+                    doHandlerSuccess(msg.obj);
+                    break;
+                case HANDLE_POINT_FAILURE:
+                    doHandlerPointFailure(msg.obj);
+                    break;
+                case HANDLE_POINT_SUCCESS:
+                    doHandlerPointSuccess(msg.obj);
+                    break;
+                case HANDLER_SCORE_RESULT:
+                    doHandlerScoreResult(msg.obj);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private void doHandlerScoreResult(Object obj) {
+        JiLog.error(TAG,"handler result");
+
+        if (obj == null) {
+            return;
+        }
+
+        ScoreDataInfo dataInfo = (ScoreDataInfo) obj;
+        boolean isSuccess = dataInfo.isUploadSuccess();
+        if (isSuccess) {
+            Toast.makeText(mContext, R.string.get5points, Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(mContext, "get point failure", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void doHandlerPointFailure(Object obj) {
+        if (obj == null) {
+            return;
+        }
+        Toast.makeText(mContext, obj.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    private void doHandlerPointSuccess(Object obj) {
+        if (obj == null) {
+            return;
+        }
+
+        int myPoint = (int) obj;
+
+        BaseInfoData.setMyPoint(myPoint);
+    }
+
+    private void doHandlerFailure(Object obj) {
+        if (obj == null) {
+            return;
+        }
+        Toast.makeText(mContext, obj.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    private void doHandlerSuccess(Object obj) {
+        if (obj == null) {
+            return;
+        }
+
+        String userId = (String) obj;
+
+        if (!TextUtils.isEmpty(userId) && TextUtils.isEmpty(BaseInfoData.getUserId())) {
+            BaseInfoData.setUserId(userId);
+
+            if (BaseInfoData.getMyPoint() == -1) {
+                reqGetMyPoint();
+            }
+        }
+    }
 
     @Bind(R.id.custom_toolbar)
     Toolbar mToolbar;
@@ -79,22 +170,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private InterstitialAd mInterstitialAd;
 
-    private ScheduledExecutorService mScheduledExecutorService;
+    private ClientInfoManager mManager;
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            showAd();
-        }
-    };
+    private PointOperateApi mPointOperateApi;
+    private ScoreDataInfo mScoreDataInfo;
 
-    private class TimeShowAd implements Runnable {
-        @Override
-        public void run() {
-            mHandler.obtainMessage().sendToTarget();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +194,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         startService(new Intent(mContext, CoreService.class));
 
-//        startShowAd();
+        if (TextUtils.isEmpty(BaseInfoData.getUserId())) {
+            reqGetUserId();
+        } else {
+            reqGetMyPoint();
+        }
+
     }
 
     private void initAd() {
@@ -126,7 +211,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public void onAdClosed() {
                 super.onAdClosed();
                 requestNewInterstitial();
-                Toast.makeText(mContext, "ad close", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+                JiLog.error(TAG,"open ad");
+                reqModefyScore();
             }
         });
 
@@ -135,28 +226,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void requestNewInterstitial() {
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(Utils.getDevId())
+                .addTestDevice(BaseInfoData.getDevId())
                 .build();
 
         mInterstitialAd.loadAd(adRequest);
     }
 
     private void showAd() {
-        JiLog.error(TAG, "prepare show ad");
         if (mInterstitialAd.isLoaded()) {
-            JiLog.error(TAG, "show ad");
             mInterstitialAd.show();
-        }
-    }
-
-    public void startShowAd() {
-        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        mScheduledExecutorService.scheduleAtFixedRate(new TimeShowAd(), 1, TIME_GOOGLE_AD_SHOW, TimeUnit.SECONDS);
-    }
-
-    public void stopShowAd() {
-        if (mScheduledExecutorService != null) {
-            mScheduledExecutorService.shutdown();
         }
     }
 
@@ -202,11 +280,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                mToolbar.setTitle(getString(R.string.my_point) + BaseInfoData.getMyPoint());
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
+                mToolbar.setTitle(getString(R.string.app_name));
             }
         };
 
@@ -249,10 +329,95 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
+    private void reqGetUserId() {
+        if (!Utils.isNetworkConnected(mContext)) {
+            return;
+        }
+
+        if (mManager == null) {
+            mManager = new ClientInfoManager(mContext, new ClientInfoManager.OnClientInfoListener() {
+                @Override
+                public void onFailure(String errMsg) {
+                    Message msg = new Message();
+                    msg.obj = errMsg;
+                    msg.what = HANDLE_FAILURE;
+                    mHandler.sendMessage(msg);
+                }
+
+                @Override
+                public void onSuccess(String userId) {
+                    Message msg = new Message();
+                    msg.obj = userId;
+                    msg.what = HANDLE_SUCCESS;
+                    mHandler.sendMessage(msg);
+                }
+            });
+        }
+
+        mManager.req();
+    }
+
+    private void reqGetMyPoint() {
+        if (!Utils.isNetworkConnected(mContext)) {
+            return;
+        }
+
+        mScoreDataInfo = new ScoreDataInfo();
+        mScoreDataInfo.setUserId(BaseInfoData.getUserId());
+        mScoreDataInfo.setOperate(PointOperateApi.OPERATE_GET_POINT);
+
+        if (mPointOperateApi == null) {
+            mPointOperateApi = new PointOperateApi(mContext, mScoreDataInfo, new PointOperateApi.onResponseListener() {
+                @Override
+                public void onFailure(String errMsg) {
+                    Message msg = new Message();
+                    msg.obj = errMsg;
+                    msg.what = HANDLE_POINT_FAILURE;
+                    mHandler.sendMessage(msg);
+                }
+
+                @Override
+                public void onSuccess(ArrayList<PointListData> datas, int totalPoints) {
+                    Message msg = new Message();
+                    msg.obj = totalPoints;
+                    msg.what = HANDLE_POINT_SUCCESS;
+                    mHandler.sendMessage(msg);
+                }
+            });
+        }
+
+        mPointOperateApi.req();
+    }
+
+    private void reqModefyScore() {
+        ScoreDataInfo dataInfo = new ScoreDataInfo();
+        dataInfo.setOperate(PointOperateApi.OPERATE_MODEFY_POINT);
+        dataInfo.setUserId(BaseInfoData.getUserId());
+        dataInfo.setOpPoint(5);
+        PointOperateApi.getInstance().req(dataInfo).setModefyPointListener(
+                new PointOperateApi.onModefyPointListener() {
+                    @Override
+                    public void result(ScoreDataInfo dataInfo) {
+                        JiLog.error(TAG,"result");
+                        Message msg = new Message();
+                        msg.obj = dataInfo;
+                        msg.what = HANDLER_SCORE_RESULT;
+                        mHandler.sendMessage(msg);
+                    }
+                });
+
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopShowAd();
+        if (mManager != null) {
+            mManager.cancel();
+        }
+
+        if (mPointOperateApi != null) {
+            mPointOperateApi.cancel();
+        }
     }
 
     @Override

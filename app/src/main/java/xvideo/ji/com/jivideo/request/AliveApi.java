@@ -1,6 +1,7 @@
 package xvideo.ji.com.jivideo.request;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import com.android.volley.AuthFailureError;
@@ -9,13 +10,18 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.lidroid.xutils.http.RequestParams;
 
-import java.util.HashMap;
+import org.json.JSONObject;
+
+import java.net.URLDecoder;
 import java.util.Map;
 
 import xvideo.ji.com.jivideo.MyApplication;
+import xvideo.ji.com.jivideo.config.Consts;
+import xvideo.ji.com.jivideo.data.BaseInfoData;
 import xvideo.ji.com.jivideo.network.VolleyRequestManager;
+import xvideo.ji.com.jivideo.service.CoreService;
+import xvideo.ji.com.jivideo.utils.JiLog;
 import xvideo.ji.com.jivideo.utils.Utils;
 
 public class AliveApi {
@@ -39,13 +45,32 @@ public class AliveApi {
         return mInstance;
     }
 
-    private String buildParam() {
-        return null;
-    }
-
     private void analyzeAliveRsp(String s) {
         if (TextUtils.isEmpty(s)) {
             return;
+        }
+
+        try {
+            String rsp = URLDecoder.decode(s, "utf-8");
+
+            if (TextUtils.isEmpty(rsp)) {
+                return;
+            }
+
+            JiLog.error(TAG, "rsp=" + rsp);
+
+            JSONObject object = new JSONObject(rsp);
+
+            int state = object.getInt("state");
+
+            if (state == 0) {
+                Intent intent = new Intent(mContext, CoreService.class);
+                intent.setAction(CoreService.ACTION_SHOW_AD);
+                mContext.startService(intent);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -57,8 +82,7 @@ public class AliveApi {
 
         RequestQueue requestQueue = VolleyRequestManager.getRequestQueue();
 
-        //TODO need api url
-        mRequest = new StringRequest(Request.Method.POST, "url",
+        mRequest = new StringRequest(Request.Method.POST, Consts.URL_CLIENT_ACTIVE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String s) {
@@ -73,18 +97,12 @@ public class AliveApi {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-
+                        volleyError.printStackTrace();
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                String data1 = buildParam();
-                RequestParams params = new RequestParams();
-
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("data", data1);
-
-                return map;
+                return BaseInfoData.getAliveInfo();
             }
         };
 

@@ -8,6 +8,7 @@ import java.util.Stack;
 
 import xvideo.ji.com.jivideo.network.VolleyRequestManager;
 import xvideo.ji.com.jivideo.utils.JiLog;
+import xvideo.ji.com.jivideo.utils.Preferences;
 
 /**
  * Created by Domon on 15-9-21.
@@ -42,6 +43,8 @@ public class MyApplication extends Application {
 
     private void init() {
         VolleyRequestManager.init(mContext);
+
+        Preferences.initPreferences(mContext);
     }
 
     public void addActivity(Activity activity) {

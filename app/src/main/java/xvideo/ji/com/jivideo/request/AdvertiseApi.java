@@ -8,7 +8,7 @@ import com.google.android.gms.ads.InterstitialAd;
 
 import xvideo.ji.com.jivideo.MyApplication;
 import xvideo.ji.com.jivideo.config.Consts;
-import xvideo.ji.com.jivideo.utils.Utils;
+import xvideo.ji.com.jivideo.data.BaseInfoData;
 
 public class AdvertiseApi {
     private static final String TAG = AdvertiseApi.class.getSimpleName();
@@ -54,7 +54,7 @@ public class AdvertiseApi {
 
     private void requestNewInterstitial() {
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(Utils.getDevId())
+                .addTestDevice(BaseInfoData.getDevId())
                 .build();
 
         mInterstitialAd.loadAd(adRequest);

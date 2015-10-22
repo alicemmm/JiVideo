@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import xvideo.ji.com.jivideo.R;
+import xvideo.ji.com.jivideo.data.BaseInfoData;
 import xvideo.ji.com.jivideo.data.PointListData;
-import xvideo.ji.com.jivideo.manager.PointRecordsManager;
+import xvideo.ji.com.jivideo.data.ScoreDataInfo;
+import xvideo.ji.com.jivideo.manager.PointOperateApi;
 
 public class PointsRecordsActivity extends ActionBarActivity {
     private static final String TAG = PointsRecordsActivity.class.getSimpleName();
@@ -30,9 +32,11 @@ public class PointsRecordsActivity extends ActionBarActivity {
 
     private Context mContext;
 
-    private PointRecordsManager mManager;
+    private PointOperateApi mManager;
 
     private ArrayList<PointListData> mDatas;
+
+    private ScoreDataInfo mScoreDataInfo;
 
     @Bind(R.id.custom_toolbar)
     Toolbar mToolbar;
@@ -91,18 +95,21 @@ public class PointsRecordsActivity extends ActionBarActivity {
 
     private void initToolBar() {
         mToolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title_text));
-        mToolbar.setTitle("Points Records");
+        mToolbar.setTitle(getResources().getString(R.string.point_record));
 
         setSupportActionBar(mToolbar);
     }
 
     private void init() {
-
+        mScoreDataInfo = new ScoreDataInfo();
+        mScoreDataInfo.setOperate(PointOperateApi.OPERATE_RECORD_POINT);
+        mScoreDataInfo.setUserId(BaseInfoData.getUserId());
+        mScoreDataInfo.setPointType(PointOperateApi.POINT_TYPE_EARN);
     }
 
-    private void asyncPointRecordReq(){
-        if(mManager==null){
-            mManager= new PointRecordsManager(mContext, new PointRecordsManager.onResponseListener() {
+    private void asyncPointRecordReq() {
+        if (mManager == null) {
+            mManager = new PointOperateApi(mContext, mScoreDataInfo, new PointOperateApi.onResponseListener() {
                 @Override
                 public void onFailure(String errMsg) {
                     Message msg = new Message();
@@ -112,7 +119,7 @@ public class PointsRecordsActivity extends ActionBarActivity {
                 }
 
                 @Override
-                public void onSuccess(ArrayList<PointListData> datas) {
+                public void onSuccess(ArrayList<PointListData> datas, int totalPoints) {
                     Message msg = new Message();
                     msg.what = HANDLE_SUCCESS;
                     msg.obj = datas;
@@ -120,6 +127,8 @@ public class PointsRecordsActivity extends ActionBarActivity {
                 }
             });
         }
+
+        mManager.req();
     }
 
     @Override
