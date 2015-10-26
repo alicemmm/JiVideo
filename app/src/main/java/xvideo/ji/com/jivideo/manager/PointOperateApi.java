@@ -237,8 +237,7 @@ public class PointOperateApi {
 
                 if (mScoreDataInfo.getOperate() == OPERATE_GET_POINT) {
                     totalPoint = jsonObject.getInt("total_point");
-                    //todo
-//                    buyVideoIds = jsonObject.getString("pay_videos_id");
+                    buyVideoIds = jsonObject.getString("pay_videos_id");
                 }
 
                 if (mScoreDataInfo.getOperate() == OPERATE_RECORD_POINT) {
