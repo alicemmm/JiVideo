@@ -73,6 +73,14 @@ public class BaseInfoData {
         return Preferences.getIntegerValue("point");
     }
 
+    public static void setBuyMovesIds(String values) {
+        Preferences.setStringValue("buy_moves", values);
+    }
+
+    public static String getBuyMovesIds() {
+        return Preferences.getStringValue("buy_moves");
+    }
+
 
     public static int getChannelId() {
         int result = -1;

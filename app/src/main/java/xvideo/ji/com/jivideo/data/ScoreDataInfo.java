@@ -7,6 +7,7 @@ public class ScoreDataInfo {
     private String userId;
     private int opPoint;
     private int pointType;
+    private int expenseScoreId = -1;
     private boolean isUploadSuccess;
 
     public String getTitle() {
@@ -47,6 +48,14 @@ public class ScoreDataInfo {
 
     public void setPointType(int pointType) {
         this.pointType = pointType;
+    }
+
+    public int getExpenseScoreId() {
+        return expenseScoreId;
+    }
+
+    public void setExpenseScoreId(int expenseScoreId) {
+        this.expenseScoreId = expenseScoreId;
     }
 
     public boolean isUploadSuccess() {

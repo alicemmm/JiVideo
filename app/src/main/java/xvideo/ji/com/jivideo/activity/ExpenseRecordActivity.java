@@ -119,7 +119,7 @@ public class ExpenseRecordActivity extends ActionBarActivity {
                 }
 
                 @Override
-                public void onSuccess(ArrayList<PointListData> datas, int totalPoints) {
+                public void onSuccess(ArrayList<PointListData> datas, int totalPoints,String buyVideoIds) {
                     Message msg = new Message();
                     msg.what = HANDLE_SUCCESS;
                     msg.obj = datas;

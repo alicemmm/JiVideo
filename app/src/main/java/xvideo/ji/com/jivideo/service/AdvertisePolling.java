@@ -5,13 +5,13 @@ import android.util.Log;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import xvideo.ji.com.jivideo.request.AdvertiseApi;
+import xvideo.ji.com.jivideo.utils.JiLog;
 import xvideo.ji.com.jivideo.utils.Utils;
 
-public class AdvertisePolling implements Runnable{
+public class AdvertisePolling implements Runnable {
     private final String TAG = AdvertisePolling.class.getSimpleName();
 
-    private static final int AD_DEFAULT_TIME = (int) (1000 );
+    private static final int AD_DEFAULT_TIME = (int) (1000 * 60 * 3);
 
     private static final int STATUS_FLAG_INIT = 0;
     private static final int STATUS_FLAG_RUN = 1;
@@ -75,8 +75,7 @@ public class AdvertisePolling implements Runnable{
                     continue;
                 }
 
-                //TODO
-                AdvertiseApi.getInstance().showAd();
+                JiLog.error(TAG, "ad run");
 
                 Thread.sleep(AD_DEFAULT_TIME);
 
@@ -90,4 +89,5 @@ public class AdvertisePolling implements Runnable{
         if (mThreadFlag != STATUS_FLAG_STOP_NORMAL) {
             mThreadFlag = STATUS_FLAG_STOP_EXCEPTION;
         }
-    }}
+    }
+}

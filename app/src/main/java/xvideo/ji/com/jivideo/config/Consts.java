@@ -11,15 +11,14 @@ public final class Consts {
 
     //        public static final String GET_HOTVIDEO_URL = "http://api.hdyfhpoi.com/hots/api/4";
 
-//    public static final String SERVICE_DOMAIN = "http://192.168.5.99:81";
-    public static final String SERVICE_DOMAIN = "http://192.168.0.155:8090";
+    public static final String SERVICE_DOMAIN = "http://192.168.5.99:81";
+    public static final String SERVICE_DOMAIN2 = "http://192.168.0.155:8090";
 
-    public static final String URL_REPORT_CLIENT_INFO = SERVICE_DOMAIN + "/reportClientInfo.ashx";
-    public static final String URL_CLIENT_ACTIVE = SERVICE_DOMAIN + "/reportClientActive.ashx";
+    public static final String URL_CLIENT_ACTIVE = SERVICE_DOMAIN2 + "/reportClientActive.ashx";
     public static final String GET_HOTVIDEO_URL = SERVICE_DOMAIN + "/datas.ashx";
     public static final String GET_MAINVIDEO_URL = SERVICE_DOMAIN + "/getindex.ashx";
     public static final String GET_APP_LIST = SERVICE_DOMAIN + "/getAppList.ashx";
-    public static final String GET_POINT_OPERATE = SERVICE_DOMAIN + "/operateUserPoints.ashx";
+    public static final String GET_POINT_OPERATE = SERVICE_DOMAIN2 + "/operateUserPoints.ashx";
 
     public static final String APP_ROOT_DIRECTORY = "JiVideo";
     public static final String APP_APK_DIRECTORY = "APK";

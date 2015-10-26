@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,7 +120,7 @@ public class PointsRecordsActivity extends ActionBarActivity {
                 }
 
                 @Override
-                public void onSuccess(ArrayList<PointListData> datas, int totalPoints) {
+                public void onSuccess(ArrayList<PointListData> datas, int totalPoints,String buyVideoIds) {
                     Message msg = new Message();
                     msg.what = HANDLE_SUCCESS;
                     msg.obj = datas;
@@ -187,7 +188,11 @@ public class PointsRecordsActivity extends ActionBarActivity {
             }
 
 
-            holder.titleTv.setText(datas.get(i).getTitle());
+            String title = datas.get(i).getTitle();
+            if (TextUtils.isEmpty(title)) {
+                title = "click ad";
+            }
+            holder.titleTv.setText(title);
             holder.pointTv.setText("Point+" + datas.get(i).getPoint());
             holder.timeTv.setText(datas.get(i).getTime());
 

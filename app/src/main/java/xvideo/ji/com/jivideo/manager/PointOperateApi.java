@@ -40,7 +40,7 @@ public class PointOperateApi {
     public interface onResponseListener {
         void onFailure(String errMsg);
 
-        void onSuccess(ArrayList<PointListData> datas, int totalPoints);
+        void onSuccess(ArrayList<PointListData> datas, int totalPoints, String buyVideoIds);
     }
 
     public interface onModefyPointListener {
@@ -51,6 +51,7 @@ public class PointOperateApi {
 
     private static Context mContext;
     private static PointOperateApi mInstance;
+
     private ScoreDataInfo mScoreDataInfo;
 
     private onResponseListener mListener;
@@ -122,6 +123,15 @@ public class PointOperateApi {
                 map.put("op", dataInfo.getOperate() + "");
                 map.put("user_id", dataInfo.getUserId() + "");
                 map.put("op_points", dataInfo.getOpPoint() + "");
+                map.put("obj_id", dataInfo.getExpenseScoreId() + "");
+                if (!TextUtils.isEmpty(dataInfo.getTitle())) {
+                    map.put("op_title", dataInfo.getTitle());
+                }
+
+                for (String key : map.keySet()) {
+                    JiLog.error(TAG, "key= " + key + " and value= " + map.get(key));
+                }
+
                 return map;
             }
         };
@@ -139,9 +149,11 @@ public class PointOperateApi {
 
         try {
             String rsp = URLDecoder.decode(param, "utf-8");
+
+            JiLog.error(TAG, "rsp=" + rsp);
+
             JSONObject object = new JSONObject(rsp);
             result = object.getInt("state");
-            JiLog.error(TAG, "get score state=" + result);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -191,6 +203,10 @@ public class PointOperateApi {
                         break;
                 }
 
+                for (String key : map.keySet()) {
+                    JiLog.error(TAG, "key= " + key + " and value= " + map.get(key));
+                }
+
                 return map;
             }
         };
@@ -216,10 +232,13 @@ public class PointOperateApi {
                 doFailure(state + "");
             } else {
                 int totalPoint = 0;
+                String buyVideoIds = "";
                 ArrayList<PointListData> datas = null;
 
                 if (mScoreDataInfo.getOperate() == OPERATE_GET_POINT) {
-                    totalPoint = jsonObject.getInt("total_points");
+                    totalPoint = jsonObject.getInt("total_point");
+                    //todo
+//                    buyVideoIds = jsonObject.getString("pay_videos_id");
                 }
 
                 if (mScoreDataInfo.getOperate() == OPERATE_RECORD_POINT) {
@@ -231,15 +250,15 @@ public class PointOperateApi {
                         for (int i = 0; i < length; i++) {
                             JSONObject object = jsonArray.getJSONObject(i);
                             PointListData data = new PointListData();
-                            data.setTitle(object.getString("title"));
-                            data.setPoint(object.getInt("point"));
-                            data.setTime(object.getString("time"));
+                            data.setTitle(object.getString("op_title"));
+                            data.setPoint(object.getInt("op_points"));
+                            data.setTime(object.getString("op_datetime"));
                             datas.add(data);
                         }
                     }
                 }
 
-                doSuccess(datas, totalPoint);
+                doSuccess(datas, totalPoint, buyVideoIds);
             }
 
         } catch (UnsupportedEncodingException e) {
@@ -255,9 +274,9 @@ public class PointOperateApi {
         }
     }
 
-    private void doSuccess(ArrayList<PointListData> datas, int totalPoints) {
+    private void doSuccess(ArrayList<PointListData> datas, int totalPoints, String buyVideoIds) {
         if (mListener != null) {
-            mListener.onSuccess(datas, totalPoints);
+            mListener.onSuccess(datas, totalPoints, buyVideoIds);
         }
     }
 

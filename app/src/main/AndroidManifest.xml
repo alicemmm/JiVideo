@@ -29,6 +29,7 @@
         <activity android:name=".activity.VideoDetailActivity" />
         <activity android:name=".activity.PointsRecordsActivity" />
         <activity android:name=".activity.ExpenseRecordActivity" />
+        <activity android:name=".activity.WebActivity" />
 
         <!-- Include the adActivity configChanges and theme. -->
         <activity
@@ -42,6 +43,8 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
+
+        <service android:name=".service.CoreService" />
 
         <!--Use Google Play Services -->
         <meta-data

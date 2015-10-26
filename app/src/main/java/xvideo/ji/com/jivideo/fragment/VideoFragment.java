@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,10 @@ import com.bumptech.glide.Glide;
 
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.activity.VideoDetailActivity;
+import xvideo.ji.com.jivideo.data.BaseInfoData;
 import xvideo.ji.com.jivideo.data.HotVideoData;
 import xvideo.ji.com.jivideo.manager.HotVideoManager;
+import xvideo.ji.com.jivideo.utils.Utils;
 
 public class VideoFragment extends Fragment {
     private final static String TAG = VideoFragment.class.getSimpleName();
@@ -98,6 +101,14 @@ public class VideoFragment extends Fragment {
     }
 
     private void asyncHotVideoReq() {
+        if (!Utils.isNetworkConnected(mContext)) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(BaseInfoData.getUserId())) {
+            return;
+        }
+
         if (mManager == null) {
             mManager = new HotVideoManager(mContext, new HotVideoManager.onResponseListener() {
                 @Override

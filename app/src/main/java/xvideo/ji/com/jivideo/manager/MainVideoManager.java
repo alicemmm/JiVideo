@@ -3,6 +3,7 @@ package xvideo.ji.com.jivideo.manager;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Map;
 
 import xvideo.ji.com.jivideo.config.Consts;
 import xvideo.ji.com.jivideo.data.HotVideoData;
@@ -70,7 +72,12 @@ public class MainVideoManager {
                 JiLog.printExceptionStackTrace(error);
                 doFailure(null);
             }
-        });
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return super.getParams();
+            }
+        };
 
         requestQueue.add(mRequest);
     }

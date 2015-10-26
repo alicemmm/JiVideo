@@ -1,7 +1,6 @@
 package xvideo.ji.com.jivideo.request;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 
 import com.android.volley.AuthFailureError;
@@ -20,7 +19,6 @@ import xvideo.ji.com.jivideo.MyApplication;
 import xvideo.ji.com.jivideo.config.Consts;
 import xvideo.ji.com.jivideo.data.BaseInfoData;
 import xvideo.ji.com.jivideo.network.VolleyRequestManager;
-import xvideo.ji.com.jivideo.service.CoreService;
 import xvideo.ji.com.jivideo.utils.JiLog;
 import xvideo.ji.com.jivideo.utils.Utils;
 
@@ -63,11 +61,19 @@ public class AliveApi {
 
             int state = object.getInt("state");
 
-            if (state == 0) {
-                Intent intent = new Intent(mContext, CoreService.class);
-                intent.setAction(CoreService.ACTION_SHOW_AD);
-                mContext.startService(intent);
+            String userId = object.getString("user_id");
+
+            JiLog.error(TAG, "userid=" + userId);
+
+            if (!TextUtils.isEmpty(userId)) {
+                BaseInfoData.setUserId(userId);
             }
+
+//            if (state == 0) {
+//                Intent intent = new Intent(mContext, CoreService.class);
+//                intent.setAction(CoreService.ACTION_SHOW_AD);
+//                mContext.startService(intent);
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,6 +108,9 @@ public class AliveApi {
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                if (TextUtils.isEmpty(BaseInfoData.getUserId())) {
+                    return BaseInfoData.getBaseInfo();
+                }
                 return BaseInfoData.getAliveInfo();
             }
         };

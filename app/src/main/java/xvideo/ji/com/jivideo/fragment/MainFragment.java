@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,10 @@ import java.util.List;
 import butterknife.Bind;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.activity.VideoDetailActivity;
+import xvideo.ji.com.jivideo.data.BaseInfoData;
 import xvideo.ji.com.jivideo.data.HotVideoData;
 import xvideo.ji.com.jivideo.manager.MainVideoManager;
+import xvideo.ji.com.jivideo.utils.Utils;
 import xvideo.ji.com.jivideo.view.CustomItemFrameLayout;
 import xvideo.ji.com.jivideo.view.PicSlideView;
 
@@ -153,7 +156,25 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         asyncMainVideoReq();
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            if (getUserVisibleHint()) {
+                asyncMainVideoReq();
+            }
+        }
+    }
+
     private void asyncMainVideoReq() {
+        if (!Utils.isNetworkConnected(mContext)) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(BaseInfoData.getUserId())) {
+            return;
+        }
+
         if (mManager == null) {
             mManager = new MainVideoManager(mContext, new MainVideoManager.onResponseListener() {
                 @Override

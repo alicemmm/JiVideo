@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import xvideo.ji.com.jivideo.request.AliveApi;
+import xvideo.ji.com.jivideo.utils.JiLog;
 import xvideo.ji.com.jivideo.utils.Utils;
 
 public class AlivePolling implements Runnable{
@@ -76,6 +77,7 @@ public class AlivePolling implements Runnable{
                 }
 
 //                添加活跃汇报接口处理 需要验证
+                JiLog.error(TAG,"alive run");
                 AliveApi.getInstance().req();
 
                 Thread.sleep(ALIVE_DEFAULT_TIME);

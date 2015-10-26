@@ -23,6 +23,9 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,7 +38,7 @@ import xvideo.ji.com.jivideo.fragment.MainFragment;
 import xvideo.ji.com.jivideo.fragment.MoreFragment;
 import xvideo.ji.com.jivideo.fragment.SoftFragment;
 import xvideo.ji.com.jivideo.fragment.VideoFragment;
-import xvideo.ji.com.jivideo.manager.ClientInfoManager;
+import xvideo.ji.com.jivideo.manager.MainInfoManager;
 import xvideo.ji.com.jivideo.manager.PointOperateApi;
 import xvideo.ji.com.jivideo.service.CoreService;
 import xvideo.ji.com.jivideo.utils.JiLog;
@@ -44,32 +47,43 @@ import xvideo.ji.com.jivideo.utils.Utils;
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final int HANDLE_FAILURE = 0;
-    private static final int HANDLE_SUCCESS = 1;
-    private static final int HANDLE_POINT_FAILURE = 2;
-    private static final int HANDLE_POINT_SUCCESS = 3;
+    private static final int HANDLE_POINT_FAILURE = 0;
+    private static final int HANDLE_POINT_SUCCESS = 1;
 
-    private static final int HANDLER_SCORE_RESULT = 4;
+    private static final int HANDLER_SCORE_RESULT = 2;
+
+    private static final int HANDLER_AD_OK = 3;
+
+    private static final int HANDLER_MAIN_OK = 4;
+    private static final int HANDLER_MAIN_FAILURE = 5;
+
+    private static final int TIME_INTERVAL = 60 * 60;
+
+    private ScheduledExecutorService mScheduledExecutorService;
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case HANDLE_FAILURE:
-                    doHandlerFailure(msg.obj);
-                    break;
-                case HANDLE_SUCCESS:
-                    doHandlerSuccess(msg.obj);
-                    break;
                 case HANDLE_POINT_FAILURE:
                     doHandlerPointFailure(msg.obj);
                     break;
                 case HANDLE_POINT_SUCCESS:
-                    doHandlerPointSuccess(msg.obj);
+                    doHandlerPointSuccess(msg);
                     break;
                 case HANDLER_SCORE_RESULT:
                     doHandlerScoreResult(msg.obj);
+                    break;
+                case HANDLER_AD_OK:
+                    showAd();
+                    break;
+                case HANDLER_MAIN_FAILURE:
+                    doHandlerMainFailure(msg.obj);
+                    break;
+                case HANDLER_MAIN_OK:
+                    doHandlerMainSuccess(msg.obj);
+
                     break;
                 default:
                     break;
@@ -77,8 +91,29 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     };
 
+    private void doHandlerMainFailure(Object obj) {
+        if (obj == null) {
+            return;
+        }
+        Toast.makeText(mContext, obj.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    private void doHandlerMainSuccess(Object obj) {
+        JiLog.error(TAG, "doHandlerMainSuccess");
+        if (obj == null) {
+            return;
+        }
+
+        String userId = (String) obj;
+        BaseInfoData.setUserId(userId);
+
+        init();
+
+        reqGetMyPoint();
+    }
+
     private void doHandlerScoreResult(Object obj) {
-        JiLog.error(TAG,"handler result");
+        JiLog.error(TAG, "handler score result");
 
         if (obj == null) {
             return;
@@ -87,8 +122,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         ScoreDataInfo dataInfo = (ScoreDataInfo) obj;
         boolean isSuccess = dataInfo.isUploadSuccess();
         if (isSuccess) {
-            Toast.makeText(mContext, R.string.get5points, Toast.LENGTH_SHORT).show();
-        }else {
+            Toast.makeText(mContext, R.string.get1points, Toast.LENGTH_SHORT).show();
+        } else {
             Toast.makeText(mContext, "get point failure", Toast.LENGTH_SHORT).show();
         }
     }
@@ -100,37 +135,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Toast.makeText(mContext, obj.toString(), Toast.LENGTH_LONG).show();
     }
 
-    private void doHandlerPointSuccess(Object obj) {
-        if (obj == null) {
+    private void doHandlerPointSuccess(Message msg) {
+        if (msg == null) {
             return;
         }
 
-        int myPoint = (int) obj;
+        int myPoint = msg.arg1;
+        String buyVideoIds = (String) msg.obj;
+        JiLog.error(TAG, "totalpoint=" + myPoint);
+        JiLog.error(TAG, "buyVideoIds=" + buyVideoIds);
 
         BaseInfoData.setMyPoint(myPoint);
-    }
-
-    private void doHandlerFailure(Object obj) {
-        if (obj == null) {
-            return;
-        }
-        Toast.makeText(mContext, obj.toString(), Toast.LENGTH_LONG).show();
-    }
-
-    private void doHandlerSuccess(Object obj) {
-        if (obj == null) {
-            return;
-        }
-
-        String userId = (String) obj;
-
-        if (!TextUtils.isEmpty(userId) && TextUtils.isEmpty(BaseInfoData.getUserId())) {
-            BaseInfoData.setUserId(userId);
-
-            if (BaseInfoData.getMyPoint() == -1) {
-                reqGetMyPoint();
-            }
-        }
+        BaseInfoData.setBuyMovesIds(buyVideoIds);
     }
 
     @Bind(R.id.custom_toolbar)
@@ -170,10 +186,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private InterstitialAd mInterstitialAd;
 
-    private ClientInfoManager mManager;
-
     private PointOperateApi mPointOperateApi;
     private ScoreDataInfo mScoreDataInfo;
+
+    private MainInfoManager mMainInfoManager;
 
 
     @Override
@@ -188,18 +204,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         initMenu();
 
-        init();
-
         initAd();
+
+        reqMainInfo();
 
         startService(new Intent(mContext, CoreService.class));
 
-        if (TextUtils.isEmpty(BaseInfoData.getUserId())) {
-            reqGetUserId();
-        } else {
-            reqGetMyPoint();
-        }
+        startPlay();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        JiLog.error(TAG, "resume");
     }
 
     private void initAd() {
@@ -216,7 +233,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onAdOpened() {
                 super.onAdOpened();
-                JiLog.error(TAG,"open ad");
+                JiLog.error(TAG, "open ad");
                 reqModefyScore();
             }
         });
@@ -329,18 +346,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
-    private void reqGetUserId() {
+    private void reqMainInfo() {
         if (!Utils.isNetworkConnected(mContext)) {
             return;
         }
 
-        if (mManager == null) {
-            mManager = new ClientInfoManager(mContext, new ClientInfoManager.OnClientInfoListener() {
+        if (mMainInfoManager == null) {
+            mMainInfoManager = new MainInfoManager(mContext, new MainInfoManager.onResponseListener() {
                 @Override
                 public void onFailure(String errMsg) {
                     Message msg = new Message();
                     msg.obj = errMsg;
-                    msg.what = HANDLE_FAILURE;
+                    msg.what = HANDLER_MAIN_FAILURE;
                     mHandler.sendMessage(msg);
                 }
 
@@ -348,17 +365,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 public void onSuccess(String userId) {
                     Message msg = new Message();
                     msg.obj = userId;
-                    msg.what = HANDLE_SUCCESS;
+                    msg.what = HANDLER_MAIN_OK;
                     mHandler.sendMessage(msg);
                 }
             });
         }
 
-        mManager.req();
+        mMainInfoManager.req();
     }
 
     private void reqGetMyPoint() {
         if (!Utils.isNetworkConnected(mContext)) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(BaseInfoData.getUserId())) {
             return;
         }
 
@@ -377,9 +398,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
 
                 @Override
-                public void onSuccess(ArrayList<PointListData> datas, int totalPoints) {
+                public void onSuccess(ArrayList<PointListData> datas, int totalPoints, String buyVideoIds) {
                     Message msg = new Message();
-                    msg.obj = totalPoints;
+                    msg.arg1 = totalPoints;
+                    msg.obj = buyVideoIds;
                     msg.what = HANDLE_POINT_SUCCESS;
                     mHandler.sendMessage(msg);
                 }
@@ -393,12 +415,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         ScoreDataInfo dataInfo = new ScoreDataInfo();
         dataInfo.setOperate(PointOperateApi.OPERATE_MODEFY_POINT);
         dataInfo.setUserId(BaseInfoData.getUserId());
-        dataInfo.setOpPoint(5);
+        //get score
+        dataInfo.setOpPoint(1);
         PointOperateApi.getInstance().req(dataInfo).setModefyPointListener(
                 new PointOperateApi.onModefyPointListener() {
                     @Override
                     public void result(ScoreDataInfo dataInfo) {
-                        JiLog.error(TAG,"result");
                         Message msg = new Message();
                         msg.obj = dataInfo;
                         msg.what = HANDLER_SCORE_RESULT;
@@ -408,15 +430,34 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
+    public void startPlay() {
+        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        mScheduledExecutorService.scheduleAtFixedRate(new AdShowTask(), 1, TIME_INTERVAL, TimeUnit.SECONDS);
+    }
+
+    public void stopPlay() {
+        mScheduledExecutorService.shutdown();
+    }
+
+    private class AdShowTask implements Runnable {
+        @Override
+        public void run() {
+            Message msg = new Message();
+            msg.what = HANDLER_AD_OK;
+            mHandler.sendMessage(msg);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mManager != null) {
-            mManager.cancel();
-        }
 
         if (mPointOperateApi != null) {
             mPointOperateApi.cancel();
+        }
+
+        if (mMainInfoManager != null) {
+            mMainInfoManager.cancel();
         }
     }
 

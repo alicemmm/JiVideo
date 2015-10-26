@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import xvideo.ji.com.jivideo.R;
+import xvideo.ji.com.jivideo.data.BaseInfoData;
 import xvideo.ji.com.jivideo.data.SoftData;
 import xvideo.ji.com.jivideo.download.DownloadManager;
 import xvideo.ji.com.jivideo.download.DownloadService;
@@ -91,7 +93,6 @@ public class SoftFragment extends Fragment {
         mListView = (ListView) view.findViewById(R.id.soft_fragment_lv);
         init();
 
-        asyncSoftListReq();
         return view;
     }
 
@@ -110,9 +111,18 @@ public class SoftFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        asyncSoftListReq();
     }
 
     private void asyncSoftListReq() {
+        if (!Utils.isNetworkConnected(mContext)) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(BaseInfoData.getUserId())) {
+            return;
+        }
+
         if (mSoftListManager == null) {
             mSoftListManager = new SoftListManager(mContext, new SoftListManager.onResponseListener() {
                 @Override

@@ -12,8 +12,8 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
-import xvideo.ji.com.jivideo.request.AdvertiseApi;
 import xvideo.ji.com.jivideo.request.AliveApi;
+import xvideo.ji.com.jivideo.utils.JiLog;
 
 public class CoreService extends Service {
     private static final String TAG = CoreService.class.getSimpleName();
@@ -28,7 +28,7 @@ public class CoreService extends Service {
 
     private Context mContext;
     private AlivePolling mAlivePolling;
-    private AdvertisePolling mAdvertisePolling;
+//    private AdvertisePolling mAdvertisePolling;
 
     private volatile Looper mCoreLooper;
     private volatile AliveHandler mCoreHandler;
@@ -46,7 +46,7 @@ public class CoreService extends Service {
                     AliveApi.getInstance().req();
                     break;
                 case HANDLER_SHOW_AD:
-                    AdvertiseApi.getInstance().showAd();
+//                    AdvertiseApi.getInstance().showAd();
                     break;
                 default:
                     break;
@@ -70,10 +70,10 @@ public class CoreService extends Service {
             mAlivePolling.start();
         }
 
-        if (mAdvertisePolling == null) {
-            mAdvertisePolling = new AdvertisePolling(mContext);
-            mAdvertisePolling.start();
-        }
+//        if (mAdvertisePolling == null) {
+//            mAdvertisePolling = new AdvertisePolling(mContext);
+//            mAdvertisePolling.start();
+//        }
     }
 
     @Override
@@ -83,6 +83,8 @@ public class CoreService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        JiLog.error(TAG,"onStartCommand");
+
         do {
             if (intent == null) {
                 Log.w(TAG, "intent == null");
@@ -117,9 +119,9 @@ public class CoreService extends Service {
             mAlivePolling = null;
         }
 
-        if (mAdvertisePolling != null) {
-            mAdvertisePolling.stop();
-            mAdvertisePolling = null;
-        }
+//        if (mAdvertisePolling != null) {
+//            mAdvertisePolling.stop();
+//            mAdvertisePolling = null;
+//        }
     }
 }

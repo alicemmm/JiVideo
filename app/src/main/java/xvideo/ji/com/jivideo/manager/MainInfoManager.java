@@ -10,28 +10,24 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Map;
 
 import xvideo.ji.com.jivideo.config.Consts;
-import xvideo.ji.com.jivideo.data.HotVideoData;
+import xvideo.ji.com.jivideo.data.BaseInfoData;
 import xvideo.ji.com.jivideo.network.VolleyRequestManager;
 import xvideo.ji.com.jivideo.utils.JiLog;
 import xvideo.ji.com.jivideo.utils.Utils;
 
-public class HotVideoManager {
-    private static final String TAG = HotVideoManager.class.getSimpleName();
+public class MainInfoManager {
+    private static final String TAG = MainInfoManager.class.getSimpleName();
 
     public interface onResponseListener {
         void onFailure(String errMsg);
 
-        void onSuccess(HotVideoData hotVideoData);
+        void onSuccess(String userId);
     }
 
     private StringRequest mRequest;
@@ -40,12 +36,12 @@ public class HotVideoManager {
 
     private onResponseListener mListener;
 
-    public HotVideoManager(Context mContext, onResponseListener mListener) {
+    public MainInfoManager(Context mContext, onResponseListener mListener) {
         this.mContext = mContext;
         this.mListener = mListener;
     }
 
-    public HotVideoManager(Context mContext) {
+    public MainInfoManager(Context mContext) {
         this.mContext = mContext;
     }
 
@@ -60,7 +56,7 @@ public class HotVideoManager {
 
         final RequestQueue requestQueue = VolleyRequestManager.getRequestQueue();
 
-        mRequest = new StringRequest(Request.Method.POST, Consts.GET_HOTVIDEO_URL,
+        mRequest = new StringRequest(Request.Method.POST, Consts.URL_CLIENT_ACTIVE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String response) {
@@ -80,7 +76,7 @@ public class HotVideoManager {
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                return super.getParams();
+                return BaseInfoData.getBaseInfo();
             }
         };
 
@@ -88,55 +84,35 @@ public class HotVideoManager {
     }
 
     private void analyseRsp(String param) {
+        if (TextUtils.isEmpty(param)) {
+            return;
+        }
+
         try {
             String rsp = URLDecoder.decode(param, "utf-8");
 
             if (TextUtils.isEmpty(rsp)) {
-                doFailure("param is empty");
                 return;
             }
 
             JiLog.error(TAG, "rsp=" + rsp);
 
-            HotVideoData hotVideoData = new HotVideoData();
-            ArrayList<HotVideoData.HotsEntity> hotsDataList = null;
+            JSONObject object = new JSONObject(rsp);
 
-            JSONObject jsonObject = new JSONObject(rsp);
-            JSONArray jsonArray = jsonObject.getJSONArray("hots");
-            int length = jsonArray.length();
+            int state = object.getInt("state");
 
-            if (length > 0) {
-                hotsDataList = new ArrayList<>();
-                for (int i = 0; i < length; i++) {
-                    JSONObject object = jsonArray.getJSONObject(i);
+            String userId = object.getString("user_id");
 
-                    HotVideoData.HotsEntity hotsData = new HotVideoData.HotsEntity();
+            JiLog.error(TAG, "userid=" + userId);
 
-                    hotsData.setArea(object.optString("area"));
-                    hotsData.setBt_url(object.optString("bt_url"));
-                    hotsData.setCountry(object.optString("country"));
-                    hotsData.setDescription(object.optString("description"));
-                    hotsData.setHigh_point(object.optInt("high_point"));
-                    hotsData.setId(object.optInt("id"));
-                    hotsData.setLow_point(object.optInt("low_point"));
-                    hotsData.setMain_icon(object.optString("main_icon"));
-                    hotsData.setScore(object.optInt("score"));
-                    hotsData.setSmall_icon(object.optString("small_icon"));
-                    hotsData.setTitle(object.optString("title"));
-                    hotsData.setUrl(object.optString("url"));
-                    hotsData.setVideo(object.optString("video"));
-                    hotsData.setVideo2(object.optString("video2"));
-                    hotsData.setWatch(object.optInt("watch"));
-                    hotsDataList.add(hotsData);
-                }
-                hotVideoData.setHots(hotsDataList);
+            if (state == 0) {
+                doSuccess(userId);
+            } else {
+                doFailure(state + "");
             }
 
-            doSuccess(hotVideoData);
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (Exception e) {
+            doFailure(e.toString());
             e.printStackTrace();
         }
     }
@@ -147,9 +123,9 @@ public class HotVideoManager {
         }
     }
 
-    private void doSuccess(HotVideoData hotVideoData) {
+    private void doSuccess(String userId) {
         if (mListener != null) {
-            mListener.onSuccess(hotVideoData);
+            mListener.onSuccess(userId);
         }
     }
 

@@ -21,6 +21,7 @@ public class AdvertiseApi {
 
     private AdvertiseApi() {
         mContext = MyApplication.getAppContext();
+        initInterstitialAd();
     }
 
     public synchronized static AdvertiseApi getInstance() {
@@ -31,8 +32,6 @@ public class AdvertiseApi {
     }
 
     public void showAd() {
-        initInterstitialAd();
-
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         }
