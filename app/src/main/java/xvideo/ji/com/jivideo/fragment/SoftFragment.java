@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -24,12 +23,18 @@ import com.lidroid.xutils.http.callback.RequestCallBack;
 import java.io.File;
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import xvideo.ji.com.jivideo.R;
 import xvideo.ji.com.jivideo.data.BaseInfoData;
+import xvideo.ji.com.jivideo.data.ScoreDataInfo;
 import xvideo.ji.com.jivideo.data.SoftData;
 import xvideo.ji.com.jivideo.download.DownloadManager;
 import xvideo.ji.com.jivideo.download.DownloadService;
+import xvideo.ji.com.jivideo.manager.PointOperateApi;
 import xvideo.ji.com.jivideo.manager.SoftListManager;
+import xvideo.ji.com.jivideo.request.TaskMonitorApi;
 import xvideo.ji.com.jivideo.utils.JiLog;
 import xvideo.ji.com.jivideo.utils.Utils;
 
@@ -39,17 +44,70 @@ public class SoftFragment extends Fragment {
     private static final int HANDLE_FAILURE = 0;
     private static final int HANDLE_SUCCESS = 1;
 
+    private static final int DOWNLOAD_STATE_PREPARE = 0;
+    private static final int DOWNLOAD_STATE_START = 1;
+    private static final int DOWNLOAD_STATE_LOADING = 2;
+    private static final int DOWNLOAD_STATE_COMPLETE = 3;
+    private static final int DOWNLOAD_STATE_FAILURE = 4;
+
+    @Bind(R.id.soft_fragment_lv)
+    ListView mListView;
+
+    @OnItemClick(R.id.soft_fragment_lv)
+    void onItemClickListView(int position) {
+        mTempIndex = position;
+        SoftData tempDownLoadData = mDatas.get(position);
+        String localFile = Utils.getApkPath() + File.separator + tempDownLoadData.getTitle()
+                + "_" + tempDownLoadData.getId() + ".apk";
+
+        int ret = Utils.launcherApp(mContext, tempDownLoadData.getPkgName());
+        if (ret != 0) {
+            //launch failed
+            if (Utils.isFileExist(localFile) && Utils.checkAppPackage(mContext, localFile)) {
+                Utils.installApk(mContext, localFile);
+            } else {
+                switch (tempDownLoadData.getDownloadState()) {
+                    case DOWNLOAD_STATE_PREPARE:
+                        startDownload(tempDownLoadData);
+                        break;
+                    case DOWNLOAD_STATE_START:
+                        Toast.makeText(mContext, "start download!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case DOWNLOAD_STATE_LOADING:
+                        Toast.makeText(mContext, "downloading...", Toast.LENGTH_SHORT).show();
+                        break;
+                    case DOWNLOAD_STATE_COMPLETE:
+                        startDownload(tempDownLoadData);
+                        break;
+                    case DOWNLOAD_STATE_FAILURE:
+                        startDownload(tempDownLoadData);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } else {
+            //monitor
+            ScoreDataInfo dataInfo = new ScoreDataInfo();
+            dataInfo.setUserId(BaseInfoData.getUserId());
+            dataInfo.setExpenseScoreId(tempDownLoadData.getId());
+            dataInfo.setTitle(tempDownLoadData.getTitle());
+            dataInfo.setOpPoint(tempDownLoadData.getPoint());
+            dataInfo.setOperate(PointOperateApi.OPERATE_MODEFY_POINT);
+
+            TaskMonitorApi.getInstance().req(tempDownLoadData.getPkgName(), 20, dataInfo);
+        }
+    }
+
     private Context mContext;
-    private ListView mListView;
 
     private ArrayList<SoftData> mDatas;
+    private int mTempIndex;
 
     private String mLocalFile;
 
     private SoftListManager mSoftListManager;
     private DownloadManager mDownloadManager;
-
-    private ArrayList<String> mDownloadPackageNames;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -90,28 +148,21 @@ public class SoftFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_soft, container, false);
         mContext = getActivity();
-        mListView = (ListView) view.findViewById(R.id.soft_fragment_lv);
+        ButterKnife.bind(this, view);
         init();
+
+        asyncSoftListReq();
 
         return view;
     }
 
     private void init() {
         mDownloadManager = DownloadService.getDownloadManager(mContext);
-        mDownloadPackageNames = new ArrayList<>();
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                startDownload(mDatas.get(i));
-            }
-        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        asyncSoftListReq();
     }
 
     private void asyncSoftListReq() {
@@ -147,8 +198,6 @@ public class SoftFragment extends Fragment {
     }
 
     private void startDownload(SoftData data) {
-        mLocalFile = Utils.getApkPath() + File.separator + data.getTitle() + ".apk";
-
         if (!Utils.isExternalStorageWriteable()) {
             Toast.makeText(mContext, "No memory card!", Toast.LENGTH_LONG).show();
             return;
@@ -159,12 +208,13 @@ public class SoftFragment extends Fragment {
             return;
         }
 
+        mLocalFile = Utils.getApkPath() + File.separator + data.getTitle() + "_" + data.getId() + ".apk";
+
         if (Utils.isFileExist(mLocalFile)) {
             Utils.deleteFile(mLocalFile);
         }
 
         try {
-            //todo 1 should be id
             mDownloadManager.addNewDownload(data.getDownloadUrl(), data.getTitle(), mLocalFile, data.getId(),
                     true, false, true, new DownloadRequestCallBack());
         } catch (Exception e) {
@@ -248,28 +298,33 @@ public class SoftFragment extends Fragment {
 
         @Override
         public void onStart() {
+            mDatas.get(mTempIndex).setDownloadState(DOWNLOAD_STATE_START);
             JiLog.error(TAG, "OnStart");
             Toast.makeText(mContext, "start download", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onLoading(long total, long current, boolean isUploading) {
+            mDatas.get(mTempIndex).setDownloadState(DOWNLOAD_STATE_LOADING);
             JiLog.error(TAG, "total=current=" + total + ":" + current);
         }
 
         @Override
         public void onSuccess(ResponseInfo<File> responseInfo) {
+            mDatas.get(mTempIndex).setDownloadState(DOWNLOAD_STATE_COMPLETE);
             Utils.installApk(mContext, mLocalFile);
         }
 
         @Override
         public void onFailure(HttpException error, String msg) {
+            mDatas.get(mTempIndex).setDownloadState(DOWNLOAD_STATE_FAILURE);
             JiLog.error(TAG, "receive ACTION_DOWNLOAD_ERR. errCode=" + error);
             Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCancelled() {
+            mDatas.get(mTempIndex).setDownloadState(DOWNLOAD_STATE_FAILURE);
             JiLog.error(TAG, "OnCancelled");
         }
     }

@@ -10,6 +10,7 @@ public class SoftData {
     private int point;
     private String downloadUrl;
     private String pkgName;
+    private int downloadState;
 
     public int getId() {
         return id;
@@ -65,5 +66,13 @@ public class SoftData {
 
     public void setPkgName(String pkgName) {
         this.pkgName = pkgName;
+    }
+
+    public int getDownloadState() {
+        return downloadState;
+    }
+
+    public void setDownloadState(int downloadState) {
+        this.downloadState = downloadState;
     }
 }

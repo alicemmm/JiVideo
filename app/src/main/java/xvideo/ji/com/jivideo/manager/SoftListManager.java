@@ -103,6 +103,7 @@ public class SoftListManager {
                     softData.setPoint(object.getInt("point"));
                     softData.setDownloadUrl(object.getString("url"));
                     softData.setPkgName(object.getString("packageName"));
+                    softData.setDownloadState(0); // init prepare download
                     softDatas.add(softData);
                 }
             }
